@@ -11,7 +11,7 @@
 
 ## • Installation
 
-[<img src='images/get-it-on-github.png' alt='Get it on GitHub' height = "90">](https://github.com/ycngmn/Nobook/releases/latest)
+[<img src='images/get-it-on-github.png' alt='Get it on GitHub' height = "90">](https://github.com/eepiemi/Nobook-material-you/releases/latest)
 
 ## • Setup
 
