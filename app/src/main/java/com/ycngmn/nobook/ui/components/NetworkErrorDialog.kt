@@ -19,7 +19,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.ycngmn.nobook.ui.theme.FacebookBlue
 
 
 @Composable
@@ -50,13 +49,13 @@ fun NetworkErrorDialog(context: Context) {
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                border = BorderStroke(1.5.dp, FacebookBlue),
+                border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.secondary),
                 shape = RoundedCornerShape(2.dp),
                 onClick = { activity?.finish() }
             ) {
                 Text(
                     "OK",
-                    color = FacebookBlue,
+                    color = MaterialTheme.colorScheme.secondary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
