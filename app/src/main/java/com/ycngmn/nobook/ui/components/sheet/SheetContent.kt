@@ -149,7 +149,6 @@ fun SheetContent(
                 Card  (
                     modifier = Modifier.clickable { onRestart() },
                     shape = RoundedCornerShape(6.dp),
-                    elevation = CardDefaults.cardElevation(2.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.background
                     )
