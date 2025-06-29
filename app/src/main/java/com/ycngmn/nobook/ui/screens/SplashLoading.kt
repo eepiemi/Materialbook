@@ -20,13 +20,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.multiplatform.webview.web.LoadingState
 import com.ycngmn.nobook.R
-import com.ycngmn.nobook.ui.theme.GoogleDark
 
 @Composable
 fun SplashLoading(loadingState: LoadingState) {
 
     Column (
-        modifier = Modifier.background(GoogleDark).fillMaxSize().zIndex(2F),
+        modifier = Modifier.background(Color(0XFF000000)).fillMaxSize().zIndex(2F),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
