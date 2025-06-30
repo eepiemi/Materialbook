@@ -2,20 +2,18 @@ package com.ycngmn.nobook.ui.components
 
 import android.app.Activity
 import android.content.Context
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -34,28 +32,30 @@ fun NetworkErrorDialog(context: Context) {
         ) {
             Text(
                 "Connect to a network",
-                fontSize = 17.sp,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(bottom = 16.dp)
+                fontSize = 24.sp,
+                textAlign = TextAlign.Center,
+                color = Color.White,
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+                    .fillMaxWidth()
             )
 
             Text(
                 "To use Nobook, turn on mobile data or connect to Wi-Fi.",
-                fontSize = 16.sp,
-                modifier = Modifier.padding(bottom = 20.dp),
-                color = MaterialTheme.colorScheme.secondary
+                fontSize = 14.sp,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier
+                    .padding(bottom = 24.dp)
+                    .fillMaxWidth()
             )
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.secondary),
-                shape = RoundedCornerShape(2.dp),
                 onClick = { activity?.finish() }
             ) {
                 Text(
                     "OK",
-                    color = MaterialTheme.colorScheme.secondary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
