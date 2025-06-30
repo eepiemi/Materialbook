@@ -25,7 +25,7 @@ import com.ycngmn.nobook.R
 fun SplashLoading(loadingState: LoadingState) {
 
     Column (
-        modifier = Modifier.background(Color(0XFF000000)).fillMaxSize().zIndex(2F),
+        modifier = Modifier.background(Color.Black).fillMaxSize().zIndex(2F),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
