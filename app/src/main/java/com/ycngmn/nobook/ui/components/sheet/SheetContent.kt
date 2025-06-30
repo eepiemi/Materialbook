@@ -55,7 +55,7 @@ fun SheetContent(
 
     Box(
         modifier = Modifier
-            .background(color = Color(0XFF000000))
+            .background(color = Color.Black)
             .verticalScroll(state = rememberScrollState())
     ) {
         Column(
@@ -150,7 +150,7 @@ fun SheetContent(
                     modifier = Modifier.clickable { onRestart() },
                     shape = RoundedCornerShape(6.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color(0XFF000000)
+                        containerColor = Color.Black
                     )
                 ) {
                     Text(
@@ -168,7 +168,7 @@ fun SheetContent(
                 Card  (
                     shape = RoundedCornerShape(6.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color(0XFF000000)
+                        containerColor = Color.Black
                     )
                 ) {
 
@@ -202,7 +202,7 @@ private fun HideOptionsDialog(viewModel: NobookViewModel, onClose: () -> Unit) {
         Card(
             shape = RoundedCornerShape(10.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color(0XFF000000)
+                containerColor = Color.Black
             )
         ) {
             SheetItem(
