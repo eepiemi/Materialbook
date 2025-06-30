@@ -30,7 +30,7 @@ fun NetworkErrorDialog(context: Context) {
         onDismissRequest = {}
     ) {
         Column (
-            modifier = Modifier.background(MaterialTheme.colorScheme.background).padding(16.dp)
+            modifier = Modifier.background(Color.Black).padding(16.dp)
         ) {
             Text(
                 "Connect to a network",
