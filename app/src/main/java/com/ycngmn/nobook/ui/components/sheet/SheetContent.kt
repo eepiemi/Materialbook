@@ -55,7 +55,7 @@ fun SheetContent(
 
     Box(
         modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.background)
+            .background(color = Color(0XFF000000))
             .verticalScroll(state = rememberScrollState())
     ) {
         Column(
@@ -150,7 +150,7 @@ fun SheetContent(
                     modifier = Modifier.clickable { onRestart() },
                     shape = RoundedCornerShape(6.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.background
+                        containerColor = Color(0XFF000000)
                     )
                 ) {
                     Text(
@@ -168,7 +168,7 @@ fun SheetContent(
                 Card  (
                     shape = RoundedCornerShape(6.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.background
+                        containerColor = Color(0XFF000000)
                     )
                 ) {
 
@@ -200,7 +200,10 @@ private fun HideOptionsDialog(viewModel: NobookViewModel, onClose: () -> Unit) {
         onDismissRequest = { onClose() }
     ) {
         Card(
-            shape = RoundedCornerShape(10.dp)
+            shape = RoundedCornerShape(10.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0XFF000000)
+            )
         ) {
             SheetItem(
                 icon = R.drawable.public_off_24px,
