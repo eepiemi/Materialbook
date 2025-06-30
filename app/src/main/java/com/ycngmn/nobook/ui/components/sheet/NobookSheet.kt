@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.rememberCoroutineScope
@@ -34,6 +35,7 @@ fun NobookSheet(
 
         ModalBottomSheet(
             modifier = Modifier.wrapContentHeight(),
+            containerColor = Color.Black,
             onDismissRequest = { openBottomSheet.value = false },
             sheetState = bottomSheetState,
         ) {
