@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Nobook</string>
+    <string name="app_name">Materialbook</string>
 
     <!-- Bottom Text and Buttons -->
     <string name="apply_immediately">এখনই প্রয়োগ করুন</string>

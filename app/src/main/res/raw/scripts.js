@@ -246,7 +246,7 @@ observer.observe(document.body, { childList: true, subtree: true });
 })();
 
 
-/* The below scripts are specific to com.ycngmn.Nobook application. */
+/* The below scripts are specific to com.eepiemi.Materialbook application. */
 
 (() => {
   const onReady = (fn) => {

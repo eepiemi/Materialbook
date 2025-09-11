@@ -8,11 +8,11 @@ body:
       description: |
         Please complete the following before submitting a bug report:
       options:
-        - label: I am using the latest version of Nobook.
+        - label: I am using the latest version of Materialbook.
           required: true
         - label: I have searched for existing issues related to this bug.
           required: true
-        - label: This issue is specific to Nobook ,i.e., not a bug of Facebook.
+        - label: This issue is specific to Materialbook ,i.e., not a bug of Facebook.
           required: true
           
   - type: input

@@ -99,8 +99,8 @@ jobs:
       - name: Rename APK for Release
         run: |
           TAG_NAME="${{ github.event.inputs.release_tag || github.ref_name }}"
-          mv app-release.apk "Nobook_${TAG_NAME}.apk"
-          if [ ! -f "Nobook_${TAG_NAME}.apk" ]; then
+          mv app-release.apk "Materialbook_${TAG_NAME}.apk"
+          if [ ! -f "Materialbook_${TAG_NAME}.apk" ]; then
             echo "Failed to rename APK"
             exit 1
           fi
@@ -118,5 +118,5 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.release_tag || github.ref_name }}
-          files: Nobook_${{ github.event.inputs.release_tag || github.ref_name }}.apk
+          files: Materialbook_${{ github.event.inputs.release_tag || github.ref_name }}.apk
           body_path: CHANGE.txt

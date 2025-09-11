@@ -17,14 +17,14 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Nobook"
+        android:theme="@style/Theme.Materialbook"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize"
             android:exported="true"
-            android:theme="@style/Theme.Nobook">
+            android:theme="@style/Theme.Materialbook">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

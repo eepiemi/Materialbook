@@ -14,7 +14,7 @@
   let isProcessing = false;
   let currentContentContainer = null;
   let lastDownloadedUrl = null;
-  const DOWNLOAD_BTN_ID = "nobook-global-downloader";
+  const DOWNLOAD_BTN_ID = "materialbook-global-downloader";
 
   // Selectors for finding media content
   const SELECTORS = {

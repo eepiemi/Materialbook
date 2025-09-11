@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Nobook"
+rootProject.name = "Materialbook"
 include(":app")
  
