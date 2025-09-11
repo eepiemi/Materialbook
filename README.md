@@ -1,8 +1,7 @@
 <h1 align=center>
     Materialbook
 </h1>
-![Downloads](https://img.shields.io/github/downloads/eepiemi/Materialbook/total?link=https%3A%2F%2Fgithub.com%2Feepiemi%2FMaterialbook%2Freleases)
-
+[![Downloads](https://img.shields.io/github/downloads/eepiemi/Materialbook/total)](https://github.com/eepiemi/Materialbook/releases)
 <p align="center">
   <img src='images/materialbook_github_cover.png' height='200' alt="materialbook_cover">
 </p>
