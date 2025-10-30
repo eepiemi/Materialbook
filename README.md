@@ -35,7 +35,7 @@
     * Or via terminal: 
     ```
     git clone https://github.com/eepiemi/Materialbook.git
-    cd Nobook-material-you
+    cd Materialbook
     ``` 
 2.  **Open in Android Studio.** (only if cloned via terminal)
     * Select Open an Existing Project and choose the cloned folder.
@@ -43,7 +43,4 @@
 4.  **Run the app** in a device or emulator.
 
 ## Acknowledgement :
-> [!NOTE]
-> [@KevinnZou/compose-webview-multiplatform](https://github.com/KevinnZou/compose-webview-multiplatform) is at the core of this project.
-> Developing Nobook and now Materialbook would have been much harder and time-consuming without it.
-> If you like the app, please consider supporting that project as well.
+* [@KevinnZou/compose-webview-multiplatform](https://github.com/KevinnZou/compose-webview-multiplatform)  

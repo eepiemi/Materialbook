@@ -14,15 +14,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable()
 fun SheetItem(
-    icon: Int,
+    icon: Any,
     title: String,
-    tailIcon: Int? = null,
+    tailIcon: ImageVector? = null,
     isActive: Boolean = false,
     onClick: () -> Unit
 ) {
@@ -38,12 +39,24 @@ fun SheetItem(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 2.5.dp)
         ) {
-            Icon(
-                painter = painterResource(icon),
-                contentDescription = null,
-                modifier = Modifier.size(32.dp),
-                tint = MaterialTheme.colorScheme.onBackground
-            )
+            when (icon) {
+                is ImageVector -> {
+                    Icon(
+                        icon,
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+                is Int -> {
+                    Icon(
+                        painter = painterResource(icon),
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+            }
 
             Text(
                 text = title,
@@ -62,7 +75,7 @@ fun SheetItem(
             }
             else {
                 Icon(
-                    painter = painterResource(tailIcon),
+                    imageVector = tailIcon,
                     contentDescription = null,
                     modifier = Modifier.size(48.dp).padding(end = 18.dp),
                     tint = MaterialTheme.colorScheme.onBackground
