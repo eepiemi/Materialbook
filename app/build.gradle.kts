@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "com.eepiemi.materialbook"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.eepiemi.materialbook"
-        minSdk = 22
-        targetSdk = 35
+        minSdk = 23
+        targetSdk = 36
         versionCode = 11
         versionName = "0.1.1"
 
