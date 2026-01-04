@@ -141,7 +141,7 @@ fun SettingsContent(
             TextButton(
                 modifier = Modifier.align(Alignment.Center),
                 onClick = {
-                    val githubRepoUrl = "https://github.com/eepiemi/materialbook"
+                    val githubRepoUrl = "https://github.com/eepiemi/Materialbook"
                     val intent = Intent(Intent.ACTION_VIEW, githubRepoUrl.toUri())
                     context.startActivity(intent)
                 }
