@@ -28,13 +28,11 @@
           });
         })();
 
-
         return;
     }
 
-
     const sponsoredTexts = [
-        "Sponsored", "Gesponsert", "Sponsorlu", "Sponsorowane",
+        "Sponsored", "Ad", "Gesponsert", "Sponsorlu", "Sponsorowane",
         "Ispoonsara godhameera", "Geborg", "Bersponsor", "Ditaja",
         "Disponsori", "Giisponsoran", "Sponzorováno", "Sponsoreret",
         "Publicidad", "May Sponsor", "Sponsorisée", "Sponsorisé", "Oipytyvôva",
@@ -49,10 +47,13 @@
         "చేయబడినది చేయబడినది", "ಪ್ರಾಯೋಜಿಸಲಾಗಿದೆ", "ചെയ്‌തത് ചെയ്‌തത്",
         "ලද ලද ලද", "สนับสนุน สนับสนุน รับ สนับสนุน สนับสนุน",
         "ကြော်ငြာ ကြော်ငြာ", "ឧបត្ថម្ភ ឧបត្ថម្ភ ឧបត្ថម្ភ", "광고",
-        "贊助", "赞助内容", "広告", "സ്‌പോൺസർ ചെയ്‌തത്"
+        "贊助", "赞助内容", "広告", "സ്‌പോൺസർ ചെയ്‌തത്",
+        "Anzeige","Peye","Oglas"
     ];
 
-    const sponsoredRegex = new RegExp(sponsoredTexts.join('|'), 'i');
+    const specialChar = '󰞋';
+
+    const sponsoredRegex = new RegExp(`(${sponsoredTexts.join('|')})\\s*${specialChar}`, 'i');
 
     function hideSponsoredContent(config) {
         const { selector, textSelector } = config;
@@ -82,7 +83,6 @@
             selector: 'div[data-mcomponent="MContainer"].m.bg-s3 div[data-mcomponent="MContainer"]',
             textSelector: 'div[data-mcomponent="TextArea"] .native-text > span'
         },
-
     ];
 
     function hideAllAds() { configs.forEach(hideSponsoredContent); }
@@ -91,4 +91,5 @@
 
     const observer = new MutationObserver(hideAllAds);
     observer.observe(document.body, { childList: true, subtree: true });
+
 })();

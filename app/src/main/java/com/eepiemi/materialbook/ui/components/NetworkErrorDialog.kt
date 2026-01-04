@@ -1,7 +1,5 @@
 package com.eepiemi.materialbook.ui.components
 
-import android.app.Activity
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,26 +10,30 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-
+import androidx.compose.ui.window.DialogProperties
+import com.eepiemi.materialbook.R
 
 @Composable
-fun NetworkErrorDialog(context: Context) {
-
-    val activity = context as? Activity
-
+fun NetworkErrorDialog(
+    onDismiss: () -> Unit
+) {
     Dialog(
-        onDismissRequest = {}
+        onDismissRequest = { onDismiss() },
+        properties = DialogProperties(dismissOnClickOutside = false)
     ) {
         Column (
-            modifier = Modifier.background(Color.Black).padding(16.dp)
+            modifier = Modifier
+                .background(Color.Black)
+                .padding(16.dp)
         ) {
             Text(
-                "Connect to a network",
+                stringResource(R.string.network_error_title),
                 fontSize = 24.sp,
                 textAlign = TextAlign.Center,
                 color = Color.White,
@@ -41,7 +43,7 @@ fun NetworkErrorDialog(context: Context) {
             )
 
             Text(
-                "To use Materialbook, turn on mobile data or connect to Wi-Fi.",
+                stringResource(R.string.network_error_description),
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.secondary,
@@ -52,10 +54,10 @@ fun NetworkErrorDialog(context: Context) {
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { activity?.finish() }
+                onClick = { onDismiss() }
             ) {
                 Text(
-                    "OK",
+                    stringResource(R.string.ok),
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
