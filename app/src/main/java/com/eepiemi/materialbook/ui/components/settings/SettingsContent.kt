@@ -146,10 +146,10 @@ fun SettingsContent(
                     context.startActivity(intent)
                 }
             ) {
-                val packageName = context.packageName
-                val versionName = context.packageManager.getPackageInfo(packageName, 0).versionName
+                val appName = context.applicationInfo.loadLabel(context.packageManager).toString()
+                val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
                 Text(
-                    "$packageName | v$versionName",
+                    "$appName | v$versionName",
                     modifier = Modifier.padding(4.dp),
                     maxLines = 1
                 )
