@@ -31,7 +31,6 @@ import com.eepiemi.materialbook.R
 
 @Composable
 fun SplashLoading(progress: Float) {
-
     Column (
         modifier = Modifier
             .background(Color.Black)

@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.EmojiPeople
 import androidx.compose.material.icons.filled.Padding
 import androidx.compose.material.icons.filled.Try
 import androidx.compose.material.icons.outlined.Circle
+import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.DesktopWindows
 import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.GridView
@@ -45,20 +46,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.net.toUri
-import com.eepiemi.materialbook.MaterialbookViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.eepiemi.materialbook.R
+import com.eepiemi.materialbook.ui.viewmodel.SettingsViewModel
 import com.eepiemi.materialbook.utils.isAutoDesktop
 
 @Composable
 fun SettingsContent(
     modifier: Modifier,
-    viewModel: MaterialbookViewModel
+    viewModel: SettingsViewModel = viewModel()
 ) {
     val context = LocalContext.current
     var isOpenDialog by rememberSaveable { mutableStateOf(false) }
 
     val removeAds = viewModel.removeAds.collectAsState()
     val enableDownloadContent = viewModel.enableDownloadContent.collectAsState()
+    val enableCopyToClipboard = viewModel.enableCopyToClipboard.collectAsState()
     val desktopLayout = viewModel.desktopLayout.collectAsState()
     val immersiveMode = viewModel.immersiveMode.collectAsState()
     val stickyNavbar = viewModel.stickyNavbar.collectAsState()
@@ -86,6 +89,13 @@ fun SettingsContent(
                     supportingText = stringResource(R.string.enable_download_button_on_media_view),
                     isActive = enableDownloadContent.value,
                     onClick = { viewModel.setEnableDownloadContent(!enableDownloadContent.value) },
+                ),
+                SettingsItem(
+                    icon = Icons.Outlined.ContentCopy,
+                    title = stringResource(R.string.copy_to_clipboard_title),
+                    supportingText = stringResource(R.string.enable_copy_to_clipboard_button_on_media_view),
+                    isActive = enableCopyToClipboard.value,
+                    onClick = { viewModel.setEnableCopyToClipboard(!enableCopyToClipboard.value) },
                 ),
                 SettingsItem(
                     icon = Icons.Outlined.GridView,
@@ -172,7 +182,7 @@ fun SettingsContent(
 
 @Composable
 private fun HideOptionsDialog(
-    viewModel: MaterialbookViewModel,
+    viewModel: SettingsViewModel,
     onDismiss: () -> Unit
 ) {
 

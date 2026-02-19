@@ -1,6 +1,6 @@
 /*
- * Script to add download buttons for stories, stories highlights and reels on Facebook
- * Original Author: @YeiversonYurgaky
+ * Script to add copy to clipboard buttons for images on Facebook
+ * Based on download_content.js
  */
 
 (function() {
@@ -13,18 +13,16 @@
   // Global state
   let isProcessing = false;
   let currentContentContainer = null;
-  let lastDownloadedUrl = null;
-  const DOWNLOAD_BTN_ID = "materialbook-global-downloader";
+  let lastCopiedUrl = null;
+  const COPY_BTN_ID = "materialbook-clipboard-copier";
 
   // Selectors for finding media content
   const SELECTORS = {
     mediaElements: [
-      'div[role="dialog"] video:not([hidden])',
       'div[role="dialog"] img[src*="fbcdn"]:not([width="16"]):not([hidden])',
-      'div.x1ey2m1c.x9f619.xds687c.x17qophe.x10l6tqk.x13vifvy[role="presentation"] video',
       'div.x1ey2m1c.x9f619.xds687c.x17qophe.x10l6tqk.x13vifvy[role="presentation"] img[src*="fbcdn"]',
-      'div[data-pagelet="Story"] video',
-      'div[aria-label*="reel"] video',
+      'div[data-pagelet="Story"] img[src*="fbcdn"]',
+      'div[aria-label*="reel"] img[src*="fbcdn"]',
       'div[data-pagelet="ProfilePhoto"] img[src*="fbcdn"]'
     ],
     containers: [
@@ -38,7 +36,7 @@
       'div[aria-label*="photo"]',
       'div[data-pagelet*="ProfileAppSection"]'
     ],
-    storyIndicators: [
+    contentIndicators: [
       'div[data-sigil="story-viewer"]',
       'div[data-sigil="story-popup-header"]',
       'div[data-sigil="story-tray-item"]',
@@ -53,7 +51,7 @@
   };
 
   // Utility functions
-  const debugLog = (...args) => CONFIG.debug && console.log("[ContentDownloader]", ...args);
+  const debugLog = (...args) => CONFIG.debug && console.log("[ClipboardCopier]", ...args);
 
   const isElementVisible = (element) => {
     const rect = element.getBoundingClientRect();
@@ -77,8 +75,8 @@
     return element.parentElement;
   };
 
-  // Get the current visible media element
-  const getCurrentMediaElement = () => {
+  // Get the current visible image element
+  const getCurrentImageElement = () => {
     // Try each selector in order of priority
     for (const selector of SELECTORS.mediaElements) {
       const elements = document.querySelectorAll(selector);
@@ -91,9 +89,9 @@
       }
     }
 
-    // Fallback: look for any large visible media
+    // Fallback: look for any large visible image
     return Array.from(
-      document.querySelectorAll('video:not([hidden]), img[src*="fbcdn"]:not([width="16"]):not([hidden])')
+      document.querySelectorAll('img[src*="fbcdn"]:not([width="16"]):not([hidden])')
     ).find(el => {
       const rect = el.getBoundingClientRect();
       return isElementVisible(el) && rect.width > 150 && rect.height > 150 && el.src;
@@ -101,12 +99,11 @@
   };
 
   // Check if we are in a story or reel view
-  const isInStoryOrReelView = () => {
+  const isInContentView = () => {
     // URL pattern checks
     const url = window.location.href;
     if (
       url.includes("/stories/") ||
-      url.includes("/reel/") ||
       url.includes("/videos/") ||
       url.includes("/watch/?") ||
       url.includes("/photo") ||
@@ -117,7 +114,7 @@
     }
 
     // Element selectors check
-    for (const selector of SELECTORS.storyIndicators) {
+    for (const selector of SELECTORS.contentIndicators) {
       if (document.querySelector(selector)) {
         return true;
       }
@@ -126,57 +123,64 @@
     return false;
   };
 
-  // Download media from URL
-  const downloadMedia = (url) => {
+  // Copy image to clipboard
+  const copyImageToClipboard = (url) => {
     fetch(url)
       .then(response => response.blob())
       .then(blob => {
-        if (window.DownloadBridge && window.DownloadBridge.downloadBase64File) {
+        if (window.ClipboardBridge && window.ClipboardBridge.copyImageToClipboard) {
           const reader = new FileReader();
           reader.onloadend = function() {
             if (reader.result) {
-              window.DownloadBridge.downloadBase64File(
+              window.ClipboardBridge.copyImageToClipboard(
                 reader.result,
                 blob.type || "image/jpeg"
               );
             }
           };
           reader.readAsDataURL(blob);
+        } else {
+          try {
+            navigator.clipboard.write([
+              new ClipboardItem({
+                [blob.type]: blob
+              })
+            ]).then(() => {
+              // Success - bridge will show toast
+            }).catch(err => {
+              console.error("Clipboard API error:", err);
+            });
+          } catch (err) {
+            console.error("Clipboard not supported:", err);
+          }
         }
       })
       .catch(err => {
-        console.error("Error downloading media:", err);
+        console.error("Error copying image:", err);
       });
   };
 
-  // Extract and download videos or images
-  const extractAndDownloadMedia = () => {
-    // Find current media element
-    const mediaElement = getCurrentMediaElement();
+  // Extract and copy image
+  const extractAndCopyImage = () => {
+    // Find current image element
+    const imageElement = getCurrentImageElement();
 
-    if (mediaElement && mediaElement.src && mediaElement.src !== lastDownloadedUrl) {
-      downloadMedia(mediaElement.src);
-      lastDownloadedUrl = mediaElement.src;
+    if (imageElement && imageElement.src && imageElement.src !== lastCopiedUrl) {
+      copyImageToClipboard(imageElement.src);
+      lastCopiedUrl = imageElement.src;
       return;
     }
 
     // Get container to search in
     const container = currentContentContainer || document.body;
 
-    // Find videos first
-    const videoElement = container.querySelector("video:not([hidden])");
-    if (videoElement && videoElement.src && videoElement.src !== lastDownloadedUrl) {
-      downloadMedia(videoElement.src);
-      lastDownloadedUrl = videoElement.src;
-      return;
-    }
-
-    // If no video, try with images
+    // Try with images
     const images = Array.from(container.querySelectorAll("img"))
       .filter(img =>
         img.src &&
         !img.src.includes("data:image") &&
-        img.src !== lastDownloadedUrl
+        img.src !== lastCopiedUrl &&
+        img.src.includes("fbcdn")
       )
       .filter(img => {
         const rect = img.getBoundingClientRect();
@@ -189,8 +193,8 @@
       });
 
     if (images.length > 0) {
-      downloadMedia(images[0].src);
-      lastDownloadedUrl = images[0].src;
+      copyImageToClipboard(images[0].src);
+      lastCopiedUrl = images[0].src;
       return;
     }
 
@@ -208,26 +212,26 @@
       ) {
         const imageUrl = bgImage.replace(/^url\(['"](.+)['"]\)$/, "$1");
 
-        if (imageUrl !== lastDownloadedUrl) {
-          downloadMedia(imageUrl);
-          lastDownloadedUrl = imageUrl;
+        if (imageUrl !== lastCopiedUrl) {
+          copyImageToClipboard(imageUrl);
+          lastCopiedUrl = imageUrl;
           return;
         }
       }
     }
 
     // Nothing found
-    debugLog("No media content found to download");
+    debugLog("No image content found to copy");
   };
 
-  // Create and manage download button
-  const createDownloadButton = () => {
+  // Create and manage copy button
+  const createCopyButton = () => {
     // Add CSS for the button
     const css = `
-      #${DOWNLOAD_BTN_ID} {
+      #${COPY_BTN_ID} {
         position: fixed;
         top: 70px;
-        right: 15px;
+        right: 65px;
         width: 40px;
         height: 40px;
         background-color: rgba(0, 0, 0, 0.7);
@@ -241,12 +245,12 @@
         font-size: 20px;
         box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         cursor: pointer;
-        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 960 960" fill="white"><path d="M480,640L280,440L336,384L440,488L440,160L520,160L520,488L624,384L680,440L480,640ZM240,800Q207,800 183.5,776.5Q160,753 160,720L160,600L240,600L240,720Q240,720 240,720Q240,720 240,720L720,720Q720,720 720,720Q720,720 720,720L720,600L800,600L800,720Q800,753 776.5,776.5Q753,800 720,800L240,800Z"/></svg>');
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 960 960" fill="white"><path d="M360,720Q327,720 303.5,696.5Q280,673 280,640L280,160Q280,127 303.5,103.5Q327,80 360,80L720,80Q753,80 776.5,103.5Q800,127 800,160L800,640Q800,673 776.5,696.5Q753,720 720,720L360,720ZM360,640L720,640Q720,640 720,640Q720,640 720,640L720,160Q720,160 720,160Q720,160 720,160L360,160Q360,160 360,160Q360,160 360,160L360,640Q360,640 360,640Q360,640 360,640ZM240,840Q207,840 183.5,816.5Q160,793 160,760L160,240L240,240L240,760Q240,760 240,760Q240,760 240,760L600,760L600,840L240,840ZM360,640Q360,640 360,640Q360,640 360,640L360,160Q360,160 360,160Q360,160 360,160L360,160L360,640L360,640Q360,640 360,640Q360,640 360,640Z"/></svg>');
         background-repeat: no-repeat;
         background-position: center;
         background-size: 24px;
       }
-      #${DOWNLOAD_BTN_ID}.visible {
+      #${COPY_BTN_ID}.visible {
         display: flex !important;
       }
     `;
@@ -257,21 +261,21 @@
 
     // Create button element
     const btn = document.createElement("button");
-    btn.id = DOWNLOAD_BTN_ID;
-    btn.setAttribute("aria-label", "Download content");
+    btn.id = COPY_BTN_ID;
+    btn.setAttribute("aria-label", "Copy image to clipboard");
 
     btn.addEventListener("click", () => {
       // Reset state
       currentContentContainer = null;
-      lastDownloadedUrl = null;
+      lastCopiedUrl = null;
 
-      // Find current media and container
-      const mediaElement = getCurrentMediaElement();
-      if (mediaElement) {
-        currentContentContainer = findContentContainer(mediaElement);
+      // Find current image and container
+      const imageElement = getCurrentImageElement();
+      if (imageElement) {
+        currentContentContainer = findContentContainer(imageElement);
       }
 
-      extractAndDownloadMedia();
+      extractAndCopyImage();
     });
 
     document.body.appendChild(btn);
@@ -279,35 +283,32 @@
     return btn;
   };
 
-  // Show/hide download button based on context
+  // Show/hide copy button based on context
   const updateButtonVisibility = () => {
-    let btn = document.getElementById(DOWNLOAD_BTN_ID);
-    if (!btn) btn = createDownloadButton();
+    let btn = document.getElementById(COPY_BTN_ID);
+    if (!btn) btn = createCopyButton();
 
-    if (isInStoryOrReelView() && !isFeed()) {
-      const mediaElement = getCurrentMediaElement();
+    if (isInContentView()) {
+      const imageElement = getCurrentImageElement();
 
-      // Always hide "Open in App" buttons
-      hideOpenAppButtons();
-
-      if (mediaElement) {
-        currentContentContainer = findContentContainer(mediaElement);
+      if (imageElement) {
+        currentContentContainer = findContentContainer(imageElement);
         btn.classList.add("visible");
         return;
       }
 
       // Special case for highlighted stories
-      const highlightedStoryContainer = document.querySelector(
+      const highlightedContentContainer = document.querySelector(
         'div.x1ey2m1c.x9f619.xds687c.x17qophe.x10l6tqk.x13vifvy[role="presentation"]'
       );
 
-      if (highlightedStoryContainer) {
-        const mediaInHighlight = highlightedStoryContainer.querySelector(
-          'video, img[src*="fbcdn"]'
+      if (highlightedContentContainer) {
+        const imageInHighlight = highlightedContentContainer.querySelector(
+          'img[src*="fbcdn"]'
         );
 
-        if (mediaInHighlight && isElementVisible(mediaInHighlight)) {
-          currentContentContainer = highlightedStoryContainer;
+        if (imageInHighlight && isElementVisible(imageInHighlight)) {
+          currentContentContainer = highlightedContentContainer;
           btn.classList.add("visible");
           return;
         }
@@ -317,23 +318,6 @@
     // Hide button if not in relevant view
     btn.classList.remove("visible");
     currentContentContainer = null;
-  };
-
-  const hideOpenAppButtons = (root = document) => {
-        // Find all div[role="button"] elements
-        const buttons = root.querySelectorAll('div[role="button"]');
-
-        buttons.forEach(button => {
-          // Check if it contains div.fl.ac with a span containing the 󱥬 symbol
-          const flAcDiv = button.querySelector('div.fl.ac');
-
-          if (flAcDiv) {
-            const span = flAcDiv.querySelector('span');
-            if (span && span.textContent.includes('󱥬')) {
-              button.style.display = 'none';
-            }
-          }
-        });
   };
 
   // Main processing function
@@ -352,7 +336,7 @@
   const init = () => {
     // Reset state
     currentContentContainer = null;
-    lastDownloadedUrl = null;
+    lastCopiedUrl = null;
 
     // Initial check
     processPage();
@@ -363,8 +347,7 @@
         mutation =>
           (mutation.type === "childList" && mutation.addedNodes.length > 0) ||
           (mutation.type === "attributes" &&
-            (mutation.target.tagName === "VIDEO" ||
-             mutation.target.tagName === "IMG"))
+            mutation.target.tagName === "IMG")
       );
       if (hasRelevantChanges) processPage();
     });

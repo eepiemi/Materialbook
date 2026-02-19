@@ -3,6 +3,7 @@ package com.eepiemi.materialbook.ui.screens
 import android.content.Intent
 import android.view.View
 import android.webkit.CookieManager
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
@@ -25,19 +26,24 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.core.graphics.ColorUtils
+import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.multiplatform.webview.web.LoadingState
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberSaveableWebViewState
 import com.multiplatform.webview.web.rememberWebViewNavigator
-import com.eepiemi.materialbook.MaterialbookViewModel
+import com.eepiemi.materialbook.R
 import com.eepiemi.materialbook.ui.components.NetworkErrorDialog
 import com.eepiemi.materialbook.ui.components.settings.SettingsDialog
+import com.eepiemi.materialbook.ui.viewmodel.MainViewModel
+import com.eepiemi.materialbook.ui.viewmodel.SettingsViewModel
 import com.eepiemi.materialbook.utils.ExternalRequestInterceptor
 import com.eepiemi.materialbook.utils.fileChooserWebViewParams
 import com.eepiemi.materialbook.utils.getDesktopUserAgent
 import com.eepiemi.materialbook.utils.isAutoDesktop
+import com.eepiemi.materialbook.utils.jsBridge.ClipboardBridge
 import com.eepiemi.materialbook.utils.jsBridge.DownloadBridge
 import com.eepiemi.materialbook.utils.jsBridge.MaterialbookSettings
 import com.eepiemi.materialbook.utils.jsBridge.ThemeChange
@@ -48,7 +54,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun MaterialbookWebView(
     url: String,
-    viewModel: MaterialbookViewModel
+    settingsVM: SettingsViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val activity = LocalActivity.current
@@ -57,8 +63,16 @@ fun MaterialbookWebView(
     val state = rememberSaveableWebViewState(url)
     val navigator = rememberWebViewNavigator(
         requestInterceptor = ExternalRequestInterceptor {
-            val intent = Intent.parseUri(it, Intent.URI_INTENT_SCHEME)
-            context.startActivity(intent)
+            val intent = Intent(Intent.ACTION_VIEW, it.toUri())
+            runCatching {
+                context.startActivity(intent)
+            }.onFailure {
+                Toast.makeText(
+                    context,
+                    resources.getString(R.string.not_supported),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     )
 
@@ -93,27 +107,34 @@ fun MaterialbookWebView(
         }
     }
 
-    val isDesktop = viewModel.desktopLayout.collectAsState()
-    val isAutoRevert = viewModel.isRevertDesktop.value
+    val isDesktop by settingsVM.desktopLayout.collectAsState()
+    val isAutoRevert by settingsVM.isRevertDesktop.collectAsState()
     val isAutoDesktop = isAutoDesktop()
 
     LaunchedEffect(Unit) {
-        if (isAutoDesktop && !isDesktop.value) {
-            viewModel.setRevertDesktop(true)
-            viewModel.setDesktopLayout(true)
+        if (isAutoDesktop && !isDesktop) {
+            settingsVM.setRevertDesktop(true)
+            settingsVM.setDesktopLayout(true)
         }
         else if (!isAutoDesktop && isAutoRevert) {
-            viewModel.setRevertDesktop(false)
-            viewModel.setDesktopLayout(false)
+            settingsVM.setRevertDesktop(false)
+            settingsVM.setDesktopLayout(false)
         }
     }
 
     var isLoading by rememberSaveable { mutableStateOf(true) }
     val isError = state.errorsForCurrentRequest.lastOrNull()?.isFromMainFrame == true
 
-    val themeColor = viewModel.themeColor.collectAsState().value
+    val viewModel: MainViewModel = viewModel {
+        MainViewModel(
+            resources = resources,
+            settings = settingsVM
+        )
+    }
+
+    val themeColor by viewModel.themeColor
     // Manual handling to fix visual & padding bug on settings dialog.
-    var isImmersiveMode by rememberSaveable { mutableStateOf(viewModel.immersiveMode.value) }
+    var isImmersiveMode by rememberSaveable { mutableStateOf(settingsVM.immersiveMode.value) }
 
     fun setWindow(immersive: Boolean) {
         val window = activity?.window ?: return
@@ -135,17 +156,18 @@ fun MaterialbookWebView(
         setWindow(isImmersiveMode)
     }
 
-    val userScripts = viewModel.scripts.collectAsState().value
+    val userScripts by viewModel.scripts
     val loadingState = state.loadingState
-    LaunchedEffect(userScripts) {
-        if (userScripts == null)
-            viewModel.loadScripts(resources)
-    }
 
     LaunchedEffect(loadingState, userScripts) {
-        if (loadingState is LoadingState.Finished && userScripts != null) {
-            navigator.evaluateJavaScript(userScripts) { isLoading = false }
-        } else { isLoading = true }
+        if (loadingState is LoadingState.Finished) {
+            userScripts?.let {
+                navigator.evaluateJavaScript(it) {
+                    isLoading = false
+                }
+                viewModel.clearScripts()
+            }
+        }
     }
 
     if (isError && isLoading) {
@@ -153,19 +175,22 @@ fun MaterialbookWebView(
         return
     }
 
-    var settingsToggle by remember { mutableStateOf(false) }
+    var settingsToggle by rememberSaveable { mutableStateOf(false) }
     if (settingsToggle) {
         setWindow(false)
         SettingsDialog(
-            viewModel = viewModel,
+            themeColor = themeColor,
             onDismiss = {
-                setWindow(viewModel.immersiveMode.value)
+                setWindow(settingsVM.immersiveMode.value)
                 settingsToggle = false
             },
             onReload = {
                 viewModel.setThemeColor(Color.Transparent)
-                setWindow(viewModel.immersiveMode.value)
-                viewModel.setScripts(null)
+                setWindow(settingsVM.immersiveMode.value)
+                viewModel.refresh(
+                    resources = resources,
+                    settings = settingsVM
+                )
                 navigator.reload()
             }
         )
@@ -173,28 +198,36 @@ fun MaterialbookWebView(
 
     if (isLoading) {
         SplashLoading(
-            if (loadingState is LoadingState.Loading)
+            if (loadingState is LoadingState.Loading) {
                 loadingState.progress
-            else 0.8F
+            } else {
+                0.8F
+            }
         )
     }
 
-    val userAgent = if (isDesktop.value) getDesktopUserAgent() else ""
-    LaunchedEffect(userAgent) { state.nativeWebView.settings.userAgentString = userAgent }
+    val userAgent = if (isDesktop) getDesktopUserAgent() else ""
+    LaunchedEffect(userAgent) {
+        state.nativeWebView.settings.userAgentString = userAgent
+    }
 
     // needed to consume extra padding when keyboard is open
     val barsInsets = WindowInsets.systemBars.asPaddingValues()
     val imeHeight = rememberImeHeight()
 
     WebView(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(themeColor)
             .then(
-                if (isImmersiveMode) Modifier.padding(bottom = imeHeight)
-                else Modifier.padding(
-                    top = barsInsets.calculateTopPadding(),
-                    bottom = maxOf(barsInsets.calculateBottomPadding(), imeHeight)
-                )
+                if (isImmersiveMode) {
+                    Modifier.padding(bottom = imeHeight)
+                } else {
+                    Modifier.padding(
+                        top = barsInsets.calculateTopPadding(),
+                        bottom = maxOf(barsInsets.calculateBottomPadding(), imeHeight)
+                    )
+                }
             ),
         state = state,
         navigator = navigator,
@@ -228,17 +261,22 @@ fun MaterialbookWebView(
                     ThemeChange { viewModel.setThemeColor(Color(it)) },
                     "ThemeBridge"
                 )
-                addJavascriptInterface(DownloadBridge(context), "DownloadBridge")
+                addJavascriptInterface(
+                    DownloadBridge(context),
+                    "DownloadBridge"
+                )
+                addJavascriptInterface(
+                    ClipboardBridge(context),
+                    "ClipboardBridge"
+                )
 
                 setLayerType(View.LAYER_TYPE_HARDWARE, null)
 
-                // Hide scrollbars
                 overScrollMode = View.OVER_SCROLL_NEVER
                 isVerticalScrollBarEnabled = false
                 isHorizontalScrollBarEnabled = false
 
                 settings.setSupportZoom(true)
-                // pinch to zoom doesn't work on settings refresh otherwise
                 settings.builtInZoomControls = true
                 settings.displayZoomControls = false
             }
