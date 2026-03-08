@@ -49,7 +49,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.eepiemi.materialbook.R
 import com.eepiemi.materialbook.ui.viewmodel.SettingsViewModel
-import com.eepiemi.materialbook.utils.isAutoDesktop
+import com.eepiemi.materialbook.utils.rememberAutoDesktop
 
 @Composable
 fun SettingsContent(
@@ -68,7 +68,7 @@ fun SettingsContent(
     val pinchToZoom = viewModel.pinchToZoom.collectAsState()
     val amoledBlack = viewModel.amoledBlack.collectAsState()
 
-    val isAutoDesktop = isAutoDesktop()
+    val isAutoDesktop = rememberAutoDesktop()
 
     Column(
         modifier = modifier,

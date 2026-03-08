@@ -39,14 +39,14 @@ import com.eepiemi.materialbook.ui.components.NetworkErrorDialog
 import com.eepiemi.materialbook.ui.components.settings.SettingsDialog
 import com.eepiemi.materialbook.ui.viewmodel.MainViewModel
 import com.eepiemi.materialbook.ui.viewmodel.SettingsViewModel
+import com.eepiemi.materialbook.utils.DESKTOP_USER_AGENT
 import com.eepiemi.materialbook.utils.ExternalRequestInterceptor
 import com.eepiemi.materialbook.utils.fileChooserWebViewParams
-import com.eepiemi.materialbook.utils.getDesktopUserAgent
-import com.eepiemi.materialbook.utils.isAutoDesktop
 import com.eepiemi.materialbook.utils.jsBridge.ClipboardBridge
 import com.eepiemi.materialbook.utils.jsBridge.DownloadBridge
 import com.eepiemi.materialbook.utils.jsBridge.MaterialbookSettings
 import com.eepiemi.materialbook.utils.jsBridge.ThemeChange
+import com.eepiemi.materialbook.utils.rememberAutoDesktop
 import com.eepiemi.materialbook.utils.rememberImeHeight
 import kotlinx.coroutines.delay
 
@@ -62,8 +62,8 @@ fun MaterialbookWebView(
 
     val state = rememberSaveableWebViewState(url)
     val navigator = rememberWebViewNavigator(
-        requestInterceptor = ExternalRequestInterceptor {
-            val intent = Intent(Intent.ACTION_VIEW, it.toUri())
+        requestInterceptor = ExternalRequestInterceptor { externalUrl ->
+            val intent = Intent(Intent.ACTION_VIEW, externalUrl.toUri())
             runCatching {
                 context.startActivity(intent)
             }.onFailure {
@@ -86,16 +86,20 @@ fun MaterialbookWebView(
     // allow exiting while scrolling to top.
     var exitScroll by remember { mutableStateOf(false) }
     BackHandler {
-        if (exitScroll) activity?.finish()
-        else navigator.evaluateJavaScript("backHandlerNB();") {
-            val backHandled = it.removeSurrounding("\"")
-            when (backHandled) {
-                "false" -> {
-                    if (navigator.canGoBack) navigator.navigateBack()
-                    else activity?.finish()
+        if (exitScroll) {
+            activity?.finish()
+        } else {
+            navigator.evaluateJavaScript("backHandlerNB();") {
+                val backHandled = it.removeSurrounding("\"")
+                when (backHandled) {
+                    "false" -> {
+                        if (navigator.canGoBack) navigator.navigateBack()
+                        else activity?.finish()
+                    }
+
+                    "exit" -> activity?.finish()
+                    "scrolling" -> exitScroll = true
                 }
-                "exit" -> activity?.finish()
-                "scrolling" -> exitScroll = true
             }
         }
     }
@@ -109,7 +113,7 @@ fun MaterialbookWebView(
 
     val isDesktop by settingsVM.desktopLayout.collectAsState()
     val isAutoRevert by settingsVM.isRevertDesktop.collectAsState()
-    val isAutoDesktop = isAutoDesktop()
+    val isAutoDesktop = rememberAutoDesktop()
 
     LaunchedEffect(Unit) {
         if (isAutoDesktop && !isDesktop) {
@@ -159,13 +163,24 @@ fun MaterialbookWebView(
     val userScripts by viewModel.scripts
     val loadingState = state.loadingState
 
-    LaunchedEffect(loadingState, userScripts) {
+    LaunchedEffect(loadingState) {
         if (loadingState is LoadingState.Finished) {
             userScripts?.let {
                 navigator.evaluateJavaScript(it) {
                     isLoading = false
+                    viewModel.clearScripts()
                 }
-                viewModel.clearScripts()
+            }
+        }
+    }
+
+    LaunchedEffect(userScripts) {
+        if (loadingState is LoadingState.Finished) {
+            userScripts?.let {
+                navigator.evaluateJavaScript(it) {
+                    isLoading = false
+                    viewModel.clearScripts()
+                }
             }
         }
     }
@@ -185,6 +200,7 @@ fun MaterialbookWebView(
                 settingsToggle = false
             },
             onReload = {
+                isLoading = true
                 viewModel.setThemeColor(Color.Transparent)
                 setWindow(settingsVM.immersiveMode.value)
                 viewModel.refresh(
@@ -206,8 +222,9 @@ fun MaterialbookWebView(
         )
     }
 
-    val userAgent = if (isDesktop) getDesktopUserAgent() else ""
-    LaunchedEffect(userAgent) {
+
+    LaunchedEffect(isDesktop) {
+        val userAgent = if (isDesktop) DESKTOP_USER_AGENT else ""
         state.nativeWebView.settings.userAgentString = userAgent
     }
 
@@ -241,7 +258,6 @@ fun MaterialbookWebView(
             cookieManager.flush()
 
             state.webSettings.apply {
-                customUserAgentString = userAgent
                 isJavaScriptEnabled = true
 
                 androidWebSettings.apply {
