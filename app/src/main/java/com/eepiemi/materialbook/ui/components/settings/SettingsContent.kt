@@ -151,15 +151,13 @@ fun SettingsContent(
             TextButton(
                 modifier = Modifier.align(Alignment.Center),
                 onClick = {
-                    val githubRepoUrl = "https://github.com/eepiemi/Materialbook"
-                    val intent = Intent(Intent.ACTION_VIEW, githubRepoUrl.toUri())
+                    val bmacUrl = "https://buymeacoffee.com/eepiemi"
+                    val intent = Intent(Intent.ACTION_VIEW, bmacUrl.toUri())
                     context.startActivity(intent)
                 }
             ) {
-                val appName = context.applicationInfo.loadLabel(context.packageManager).toString()
-                val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
                 Text(
-                    "$appName | v$versionName",
+                    stringResource(R.string.support_my_work),
                     modifier = Modifier.padding(4.dp),
                     maxLines = 1
                 )
