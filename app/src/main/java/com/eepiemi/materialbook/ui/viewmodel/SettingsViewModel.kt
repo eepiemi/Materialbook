@@ -39,12 +39,12 @@ class SettingsViewModel(
     )
     val enableDownloadContent = dataStore.enableDownloadContent.stateIn(
         scope = viewModelScope,
-        initialValue = initialPrefs[ENABLE_DOWNLOAD_CONTENT] ?: false,
+        initialValue = initialPrefs[ENABLE_DOWNLOAD_CONTENT] ?: true,
         started = SharingStarted.WhileSubscribed()
     )
     val enableCopyToClipboard = dataStore.enableCopyToClipboard.stateIn(
         scope = viewModelScope,
-        initialValue = initialPrefs[ENABLE_COPY_TO_CLIPBOARD] ?: false,
+        initialValue = initialPrefs[ENABLE_COPY_TO_CLIPBOARD] ?: true,
         started = SharingStarted.WhileSubscribed()
     )
     val desktopLayout = dataStore.desktopLayout.stateIn(
@@ -59,7 +59,7 @@ class SettingsViewModel(
     )
     val stickyNavbar = dataStore.stickyNavbar.stateIn(
         scope = viewModelScope,
-        initialValue = initialPrefs[STICKY_NAVBAR] ?: false,
+        initialValue = initialPrefs[STICKY_NAVBAR] ?: true,
         started = SharingStarted.WhileSubscribed()
     )
     val pinchToZoom = dataStore.pinchToZoom.stateIn(
@@ -69,7 +69,7 @@ class SettingsViewModel(
     )
     val amoledBlack = dataStore.amoledBlack.stateIn(
         scope = viewModelScope,
-        initialValue = initialPrefs[AMOLED_BLACK] ?: false,
+        initialValue = initialPrefs[AMOLED_BLACK] ?: true,
         started = SharingStarted.WhileSubscribed()
     )
     val hideSuggested = dataStore.hideSuggested.stateIn(

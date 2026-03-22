@@ -40,12 +40,12 @@ class SettingsDataStore(private val context: Context) {
         context.dataStore.edit { it[REMOVE_ADS] = removeAds }
     }
 
-    val enableDownloadContent = context.dataStore.data.map { it[ENABLE_DOWNLOAD_CONTENT] ?: false }
+    val enableDownloadContent = context.dataStore.data.map { it[ENABLE_DOWNLOAD_CONTENT] ?: true }
     suspend fun setEnableDownloadContent(enableDownloadContent: Boolean) {
         context.dataStore.edit { it[ENABLE_DOWNLOAD_CONTENT] = enableDownloadContent }
     }
 
-    val enableCopyToClipboard = context.dataStore.data.map { it[ENABLE_COPY_TO_CLIPBOARD] ?: false }
+    val enableCopyToClipboard = context.dataStore.data.map { it[ENABLE_COPY_TO_CLIPBOARD] ?: true }
     suspend fun setEnableCopyToClipboard(enableCopyToClipboard: Boolean) {
         context.dataStore.edit { it[ENABLE_COPY_TO_CLIPBOARD] = enableCopyToClipboard }
     }
@@ -70,7 +70,7 @@ class SettingsDataStore(private val context: Context) {
         context.dataStore.edit { it[PINCH_TO_ZOOM] = pinchToZoom }
     }
 
-    val amoledBlack = context.dataStore.data.map { it[AMOLED_BLACK] ?: false }
+    val amoledBlack = context.dataStore.data.map { it[AMOLED_BLACK] ?: true }
     suspend fun setAmoledBlack(amoledBlack: Boolean) {
         context.dataStore.edit { it[AMOLED_BLACK] = amoledBlack }
     }
