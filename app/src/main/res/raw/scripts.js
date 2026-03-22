@@ -207,10 +207,32 @@
     });
 })();
 
-// Hide facebook download button at login page.
+// Hide facebook download button and other distractions at login page
 (function() {
-    const element = document.querySelector('div[data-bloks-name="bk.components.Flexbox"].wbloks_1');
-    if (element) element.remove();
+  function removeDistr() {
+    document.querySelector('div[data-bloks-name="bk.components.Flexbox"][style*="background: rgb(255, 255, 255)"].wbloks_1')?.parentElement?.remove();
+
+    document.querySelectorAll(
+      'div[data-bloks-name="bk.components.Flexbox"][style*="padding-top: 20px; padding-bottom: 20px"],' +
+      'div[data-bloks-name="bk.components.Flexbox"][style*="padding-left: 4px; padding-right: 4px; padding-bottom: 4px"],' +
+      'div[data-bloks-name="bk.components.Flexbox"][style*="padding: 10px 12px; background: rgb(255, 255, 255)"],' +
+      'div[data-bloks-name="bk.components.Flexbox"][style*="padding: 20px"]'
+    )?.forEach(distr => distr.remove());
+  }
+
+  removeDistr();
+
+  new MutationObserver(mutations => {
+    for (const m of mutations) {
+      if (m.type === 'childList' && m.addedNodes.length) {
+        removeDistr();
+        break;
+      }
+    }
+  }).observe(document.body, {
+    childList: true,
+    subtree: true
+  });
 })();
 
 // Hide annoying bottom banners
