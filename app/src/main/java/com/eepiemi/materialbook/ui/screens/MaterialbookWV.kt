@@ -50,7 +50,6 @@ import com.eepiemi.materialbook.utils.rememberAutoDesktop
 import com.eepiemi.materialbook.utils.rememberImeHeight
 import kotlinx.coroutines.delay
 
-@Suppress("AssignedValueIsNeverRead")
 @Composable
 fun MaterialbookWebView(
     url: String,
@@ -185,7 +184,6 @@ fun MaterialbookWebView(
     if (settingsToggle) {
         setWindow(false)
         SettingsDialog(
-            themeColor = themeColor,
             onDismiss = {
                 setWindow(settingsVM.immersiveMode.value)
                 settingsToggle = false
