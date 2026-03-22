@@ -235,6 +235,16 @@
   });
 })();
 
+// Make the loading bar's background transparent
+(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+    .revamped-progress-bar-color .loading-bar-background { background: transparent; }
+    .loading-bar-background { background-color: transparent; }
+    `;
+    document.head.appendChild(style);
+})();
+
 // Hide annoying bottom banners
 const observer = new MutationObserver(() => {
 
