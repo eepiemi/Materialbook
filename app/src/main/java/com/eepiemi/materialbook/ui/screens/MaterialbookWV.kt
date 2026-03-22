@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -180,12 +181,16 @@ fun MaterialbookWebView(
         return
     }
 
+    val colorScheme = MaterialTheme.colorScheme
+    val originalColor = remember { mutableStateOf(themeColor) }
+
     var settingsToggle by rememberSaveable { mutableStateOf(false) }
     if (settingsToggle) {
         setWindow(false)
         SettingsDialog(
             onDismiss = {
                 setWindow(settingsVM.immersiveMode.value)
+                viewModel.setThemeColor(originalColor.value)
                 settingsToggle = false
             },
             onReload = {
@@ -199,6 +204,13 @@ fun MaterialbookWebView(
                 navigator.reload()
             }
         )
+    }
+
+    LaunchedEffect(settingsToggle) {
+        if (settingsToggle) {
+            originalColor.value = themeColor
+            viewModel.setThemeColor(colorScheme.background)
+        }
     }
 
     if (isLoading) {
@@ -263,7 +275,7 @@ fun MaterialbookWebView(
                     "SettingsBridge"
                 )
                 addJavascriptInterface(
-                    ThemeChange { viewModel.setThemeColor(Color(it)) },
+                    ThemeChange { if (!settingsToggle) viewModel.setThemeColor(Color(it)) },
                     "ThemeBridge"
                 )
                 addJavascriptInterface(
