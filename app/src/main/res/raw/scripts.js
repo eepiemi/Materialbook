@@ -1,5 +1,5 @@
 
-// desktop mode identifier
+// Desktop mode identifier
 (() => {
     window.isDesktopMode = () => {
         return document.querySelector('html[id="facebook"]') !== null;
@@ -31,7 +31,7 @@
     document.documentElement.style.fontSize = '18px';
 
 
-    // do not stick the navbar by default
+    // Do not stick the navbar by default
     (() => {
       const waitForBanner = () => new Promise(resolve => {
         const existing = document.querySelector('div[role="banner"]');
@@ -84,8 +84,8 @@
     })();
 
 
-    // remove "send" button to save space
-    // remove the third element in the interaction bar if nb is 4
+    // Remove "send" button to save space
+    // Remove the third element in the interaction bar if nb is 4
     (function() {
       const parentSelector = '.xbmvrgn.x1diwwjn';
       const childSelector = '.x10b6aqq.x1yrsyyn.xs83m0k';
@@ -115,7 +115,7 @@
 })();
 
 
-// Scroll to top on back-press at feed.
+// Scroll to top on back-press at feed
 (() => {
     window.backHandlerNB = () => {
 
@@ -155,7 +155,7 @@
     }
 })();
 
-// Enable press and hold caption selection and apply custom selection color.
+// Enable press and hold caption selection and apply custom selection color
 (() => {
   const makeSelectable = (el) => {
     if (el.closest('div[role="button"]')) return;
@@ -242,7 +242,7 @@ observer.observe(document.body, { childList: true, subtree: true });
 })();
 
 
-/* The below scripts are specific to com.eepiemi.Materialbook application. */
+/* The below scripts are specific to com.eepiemi.materialbook application. */
 
 (() => {
   const onReady = (fn) => {
@@ -322,7 +322,7 @@ observer.observe(document.body, { childList: true, subtree: true });
 
     observer.observe(document.body, { childList: true, subtree: true });
 
-    // Observer for theme-color changes
+    // observer for theme-color changes
     const themeMeta = document.querySelector('meta[name="theme-color"]');
     if (themeMeta) {
       new MutationObserver(updateButtonColor).observe(themeMeta, {
