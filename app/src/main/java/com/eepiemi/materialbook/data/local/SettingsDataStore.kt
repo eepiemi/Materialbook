@@ -19,6 +19,7 @@ class SettingsDataStore(private val context: Context) {
         val IMMERSIVE_MODE = booleanPreferencesKey("immersive_mode")
         val STICKY_NAVBAR = booleanPreferencesKey("sticky_navbar")
         val PINCH_TO_ZOOM = booleanPreferencesKey("pinch_to_zoom")
+        val MATERIAL_YOU = booleanPreferencesKey("material_you")
         val AMOLED_BLACK = booleanPreferencesKey("amoled_black")
         val HIDE_SUGGESTED = booleanPreferencesKey("hide_suggestion")
         val HIDE_REELS = booleanPreferencesKey("hide_reels")
@@ -68,6 +69,11 @@ class SettingsDataStore(private val context: Context) {
     val pinchToZoom = context.dataStore.data.map { it[PINCH_TO_ZOOM] ?: false }
     suspend fun setPinchToZoom(pinchToZoom: Boolean) {
         context.dataStore.edit { it[PINCH_TO_ZOOM] = pinchToZoom }
+    }
+
+    val materialYou = context.dataStore.data.map { it[MATERIAL_YOU] ?: true }
+    suspend fun setMaterialYou(materialYou: Boolean) {
+        context.dataStore.edit { it[MATERIAL_YOU] = materialYou }
     }
 
     val amoledBlack = context.dataStore.data.map { it[AMOLED_BLACK] ?: true }

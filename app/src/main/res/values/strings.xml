@@ -10,6 +10,7 @@
     <string name="immersive_mode_title">Immersive mode</string>
     <string name="sticky_navbar_title">Sticky Navbar</string>
     <string name="pinch_to_zoom_title">Pinch to zoom</string>
+    <string name="material_you_title">Material You</string>
     <string name="amoled_black_title">AMOLED Black</string>
     <string name="customize_feed_title">Customize feed</string>
     <string name="network_error_title">Connect to a network</string>
@@ -28,6 +29,7 @@
     <string name="stories">Stories</string>
     <string name="people_you_may_know">People you may know</string>
     <string name="groups">Groups</string>
+    <string name="enable_material_you_theming_for_facebook">Enable Material You theming for Facebook</string>
     <string name="enable_pure_black_theme_for_amoled_displays">Enable pure black theme. Needs \'Dark mode\' to work</string>
     <string name="keep_the_navigation_bar_visible_while_scrolling">Keep the navigation bar visible while scrolling</string>
     <string name="hide_system_bars_for_a_fullscreen_experience">Hide system bars for a fullscreen experience</string>

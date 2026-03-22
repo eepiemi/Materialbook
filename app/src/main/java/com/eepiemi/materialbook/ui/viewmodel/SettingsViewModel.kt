@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.eepiemi.materialbook.data.local.SettingsDataStore
+import com.eepiemi.materialbook.data.local.SettingsDataStore.Companion.MATERIAL_YOU
 import com.eepiemi.materialbook.data.local.SettingsDataStore.Companion.AMOLED_BLACK
 import com.eepiemi.materialbook.data.local.SettingsDataStore.Companion.DESKTOP_LAYOUT
 import com.eepiemi.materialbook.data.local.SettingsDataStore.Companion.ENABLE_COPY_TO_CLIPBOARD
@@ -65,6 +66,11 @@ class SettingsViewModel(
     val pinchToZoom = dataStore.pinchToZoom.stateIn(
         scope = viewModelScope,
         initialValue = initialPrefs[PINCH_TO_ZOOM] ?: false,
+        started = SharingStarted.WhileSubscribed()
+    )
+    val materialYou = dataStore.materialYou.stateIn(
+        scope = viewModelScope,
+        initialValue = initialPrefs[MATERIAL_YOU] ?: true,
         started = SharingStarted.WhileSubscribed()
     )
     val amoledBlack = dataStore.amoledBlack.stateIn(
@@ -142,6 +148,12 @@ class SettingsViewModel(
     fun setPinchToZoom(pinchToZoom: Boolean) {
         viewModelScope.launch {
             dataStore.setPinchToZoom(pinchToZoom)
+        }
+    }
+
+    fun setMaterialYou(materialYou: Boolean) {
+        viewModelScope.launch {
+            dataStore.setMaterialYou(materialYou)
         }
     }
 

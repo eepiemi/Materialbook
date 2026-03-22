@@ -2,6 +2,6 @@
 <resources>
     <style name="Theme.Materialbook" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@android:color/background_dark</item>
-        <item name="android:colorControlActivated">#6750a4</item>
+        <item name="android:colorControlActivated">@android:color/system_accent1_600</item>
     </style>
 </resources>

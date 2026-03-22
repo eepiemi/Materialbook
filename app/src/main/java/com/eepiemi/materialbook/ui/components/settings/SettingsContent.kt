@@ -23,6 +23,7 @@ import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.DesktopWindows
 import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.GridView
+import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.PanoramaWideAngle
 import androidx.compose.material.icons.outlined.Pinch
 import androidx.compose.material.icons.outlined.Shield
@@ -66,6 +67,7 @@ fun SettingsContent(
     val immersiveMode = viewModel.immersiveMode.collectAsState()
     val stickyNavbar = viewModel.stickyNavbar.collectAsState()
     val pinchToZoom = viewModel.pinchToZoom.collectAsState()
+    val materialYou = viewModel.materialYou.collectAsState()
     val amoledBlack = viewModel.amoledBlack.collectAsState()
 
     val isAutoDesktop = rememberAutoDesktop()
@@ -136,6 +138,13 @@ fun SettingsContent(
                     supportingText = stringResource(R.string.keep_the_navigation_bar_visible_while_scrolling),
                     isActive = stickyNavbar.value,
                     onClick = { viewModel.setStickyNavbar(!stickyNavbar.value) }
+                ),
+                SettingsItem(
+                    icon = Icons.Outlined.Palette,
+                    title = stringResource(R.string.material_you_title),
+                    supportingText = stringResource(R.string.enable_material_you_theming_for_facebook),
+                    isActive = materialYou.value,
+                    onClick = { viewModel.setMaterialYou(!materialYou.value) }
                 ),
                 SettingsItem(
                     icon = Icons.Outlined.Circle,

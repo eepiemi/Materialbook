@@ -47,6 +47,7 @@ import com.eepiemi.materialbook.utils.jsBridge.ClipboardBridge
 import com.eepiemi.materialbook.utils.jsBridge.DownloadBridge
 import com.eepiemi.materialbook.utils.jsBridge.MaterialbookSettings
 import com.eepiemi.materialbook.utils.jsBridge.ThemeChange
+import com.eepiemi.materialbook.utils.jsBridge.MaterialYouBridge
 import com.eepiemi.materialbook.utils.rememberAutoDesktop
 import com.eepiemi.materialbook.utils.rememberImeHeight
 import kotlinx.coroutines.delay
@@ -233,6 +234,9 @@ fun MaterialbookWebView(
     val barsInsets = WindowInsets.systemBars.asPaddingValues()
     val imeHeight = rememberImeHeight()
 
+    val primaryColor = colorScheme.primary.toArgb()
+    val onPrimaryColor  = colorScheme.onPrimary.toArgb()
+
     WebView(
         modifier = Modifier
             .fillMaxSize()
@@ -285,6 +289,10 @@ fun MaterialbookWebView(
                 addJavascriptInterface(
                     ClipboardBridge(context),
                     "ClipboardBridge"
+                )
+                addJavascriptInterface(
+                    MaterialYouBridge(primaryColor, onPrimaryColor),
+                    "MaterialYouBridge"
                 )
 
                 setLayerType(View.LAYER_TYPE_HARDWARE, null)

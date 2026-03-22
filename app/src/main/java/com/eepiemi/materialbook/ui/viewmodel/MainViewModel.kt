@@ -45,6 +45,7 @@ class MainViewModel(
             Script(settings.enableCopyToClipboard.value, R.raw.copy_to_clipboard, "copy_to_clipboard.js"),
             Script(settings.stickyNavbar.value, R.raw.sticky_navbar, "sticky_navbar.js"),
             Script(!settings.pinchToZoom.value, R.raw.pinch_to_zoom, "pinch_to_zoom.js"),
+            Script(settings.materialYou.value, R.raw.material_you, "material_you.js"),
             Script(settings.amoledBlack.value, R.raw.amoled_black, "amoled_black.js"),
             Script(settings.hideSuggested.value, R.raw.hide_suggested, "hide_suggested.js"),
             Script(settings.hideReels.value, R.raw.hide_reels, "hide_reels.js"),
