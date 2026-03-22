@@ -12,12 +12,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    background = FacebookDark,
     onBackground = Color.White,
     secondary = Color.DarkGray
 )
 private val LightColorScheme = lightColorScheme(
-    background = Color.White,
     onBackground = Color.Black,
     secondary = Color.LightGray
 )
