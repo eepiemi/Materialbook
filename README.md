@@ -1,32 +1,59 @@
-<h1 align=center>
-    Materialbook
-</h1>
-<p align="center">
-  <img src='images/materialbook_github_cover.png' height='200' alt="materialbook_cover">
+<p align="middle">
+    <img src='./assets/banner.png' alt="Materialbook banner" width="100%">
 </p>
 
-<div align="center">Materialbook is a lightweight Android application to browse facebook, with material you theming!</div>
+<h1 align="middle">
+    📱 Download 
+</h1>
 
-## Changes over Nobook
+<p align="middle">
+    <a href='https://github.com/eepiemi/Materialbook/releases/latest'><img alt='Download (Stable)' height='40' src='./assets/download_stable.svg'/></a>
+    <a href='https://github.com/eepiemi/Materialbook/actions'><img alt='Download (Nightly)' height='40' src='./assets/download_nightly.svg'/></a>
+    <a href='https://grev.shehryar.ae/?owner=eepiemi&repo=Materialbook'><img alt='Downloads count' height='40' src='https://downloads-count.eepiemi.workers.dev'/></a>
+</p>
 
-*  Implemented Material You theming for the app icon
-*  Brought back Material You theming in the settings page (reverted the switches back to the default MY switch)
-*  Made the dialog on the no internet screen follow the M3 specification
-*  Made the splash screen, the no internet screen and the settings page, along with its "Customize feed" submenu Amoled Black
-*  Removed the ```elevation``` property of the "Apply Immediately?" button in the settings page (unintended visual bug ycngmn missed)
+<h2 align="middle">
+    🙋 Have issues? Or enjoy the app? ☕
+</h2>
 
-## Features
+<p align="middle">
+    <a href='https://github.com/eepiemi/Materialbook/issues/new/choose'><img alt='Open issue' height='40' src='./assets/open_issue.svg'/></a>
+    <a href='https://buymeacoffee.com/eepiemi'><img alt='Buy me a coffee!' height='40' src='./assets/buy_me_a_coffee.svg'/></a>
+</p>
 
-*  Blocks sponsored ads.
-*  Blocks suggested posts.
-*  Downloads media.
-*  And more.
+<h2 align="middle">
+    ✏️ This fork:
+</h2>
 
-## Installation
+*  Implements Material You theming for:
+    *  The facebook app itself
+    *  The app icon
+    *  The settings page
+    *  The "No internet" screen
+*  Makes the splash screen, the "No internet" screen and the settings page AMOLED Black
+*  Changes some minor things for aesthetics purposes
 
-[<img src='images/get-it-on-github.png' alt='Get it on GitHub' height = "90">](https://github.com/eepiemi/Materialbook/releases/latest)
+<h2 align="middle">
+    ⚙️ Features
+</h2>
 
-## Setup
+If enabled, the app:
+*  Uses Material You colors for Facebook's blues
+*  Makes Facebook AMOLED Black
+*  Blocks sponsored ads
+*  Hides distractions like:
+    *  Suggested posts
+    *  Reels
+    *  Stories
+    *  Groups
+    *  People you may know
+*  Keeps the navigation bar at the top
+*  Downloads media or copies it to the clipboard
+*  And more!
+
+<h2 align="middle">
+    🛠️ Setup
+</h2>
 
 1.  **Clone the repository**
     * In Android Studio:
@@ -42,5 +69,8 @@
 3.  **Sync the project** to download dependencies.
 4.  **Run the app** in a device or emulator.
 
-## Acknowledgement :
-* [@KevinnZou/compose-webview-multiplatform](https://github.com/KevinnZou/compose-webview-multiplatform)  
+<h2 align="middle">
+    💗 Acknowledgement:
+</h2>
+
+*  [@KevinnZou/compose-webview-multiplatform](https://github.com/KevinnZou/compose-webview-multiplatform)  
