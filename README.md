@@ -7,13 +7,12 @@
 </h1>
 
 <p align="middle">
-    <a href='https://github.com/eepiemi/Materialbook/releases/latest'><img alt='Download (Stable)' height='40' src='./assets/download_stable.svg'/></a>
-    <a href='https://github.com/eepiemi/Materialbook/actions'><img alt='Download (Nightly)' height='40' src='./assets/download_nightly.svg'/></a>
+    <a href='https://github.com/eepiemi/Materialbook/releases/latest'><img alt='Download' height='40' src='./assets/download.svg'/></a>
     <a href='https://grev.shehryar.ae/?owner=eepiemi&repo=Materialbook'><img alt='Downloads count' height='40' src='https://downloads-count.eepiemi.workers.dev'/></a>
 </p>
 
 <h2 align="middle">
-    🙋 Have issues? Or enjoy the app? ☕
+    🙋 Have issues? Enjoy the app? ☕
 </h2>
 
 <p align="middle">
@@ -30,7 +29,8 @@
     *  The app icon
     *  The settings page
     *  The "No internet" screen
-*  Makes the splash screen, the "No internet" screen and the settings page AMOLED Black
+*  Fixes AMOLED Black
+*  Makes the splash screen and the "No internet" screen AMOLED Black
 *  Changes some minor things for aesthetics purposes
 
 <h2 align="middle">
@@ -38,7 +38,7 @@
 </h2>
 
 If enabled, the app:
-*  Uses Material You colors for Facebook's blues
+*  Uses Material You colors instead of Facebook's blues
 *  Makes Facebook AMOLED Black
 *  Blocks sponsored ads
 *  Hides distractions like:
