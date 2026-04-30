@@ -1,5 +1,5 @@
 <p align="middle">
-    <img src='./assets/banner.png' alt="Materialbook banner" width="100%">
+    <img src='./fastlane/metadata/android/en-US/images/featureGraphic.png' alt="Materialbook banner" width="100%">
 </p>
 
 <h1 align="middle">

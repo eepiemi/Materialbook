@@ -1,0 +1,21 @@
+Materialbook is a lightweight Material You client for Facebook. The app is a wrapper around the mobile Facebook website, which is what allows it to be so light!
+
+If enabled in the app's settings, the app:
+<ul>
+    <li>Uses Material You colors instead of Facebook's blues</li>
+    <li>Makes Facebook AMOLED Black</li>
+    <li>Blocks sponsored ads</li>
+    <li>Hides distractions like:</li>
+        <ul>
+            <li>Suggested posts</li>
+            <li>Reels</li>
+            <li>Stories</li>
+            <li>People you may know</li>
+            <li>Groups</li>
+        </ul>
+    <li>Hides the system bars</li>
+    <li>Keeps the navigation bar at the top</li>
+    <li>Allows pinch-to-zoom anywhere</li>
+    <li>Downloads media or copies it to the clipboard</li>
+    <li>Lets the user access Messenger (Desktop layout only)
+</ul>
