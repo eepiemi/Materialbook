@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Materialbook</string>
-
     <string name="apply_immediately">هل تريد تطبيق التغييرات فوراً؟</string>
     <string name="remove_ads_title">إزالة الإعلانات</string>
     <string name="download_content_title">تنزيل المحتوى</string>
