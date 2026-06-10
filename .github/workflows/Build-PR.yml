@@ -1,0 +1,63 @@
+name: Build Pull Request
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: 17
+          cache: gradle
+
+      - name: Build APK
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --stacktrace
+
+      - name: Generate Test Keystore
+        run: |
+          keytool -genkeypair \
+            -keystore test.keystore \
+            -storepass android \
+            -keypass android \
+            -alias testkey \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -dname "CN=Pull Request Build,O=GitHub Actions,C=US"
+
+      - name: Sign Test APK
+        run: |
+          BUILD_TOOLS=$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n 1)
+
+          APK=$(find app/build/outputs/apk -name "*.apk" | head -n 1)
+
+          "$BUILD_TOOLS/apksigner" sign \
+            --ks test.keystore \
+            --ks-key-alias testkey \
+            --ks-pass pass:android \
+            --key-pass pass:android \
+            --out pull-request.apk \
+            "$APK"
+
+      - name: Verify APK Signature
+        run: |
+          BUILD_TOOLS=$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n 1)
+          "$BUILD_TOOLS/apksigner" verify pull-request.apk
+
+      - name: Upload Pull Request APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: pull-request-apk
+          path: pull-request.apk
+          compression-level: 5
