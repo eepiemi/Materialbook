@@ -2,7 +2,7 @@
   const isDesktop = window.isDesktopMode && window.isDesktopMode();
 
   if (isDesktop) {
-    const CONTAINER = 'div.x1yztbdb.x1n2onr6.xh8yej3.x1ja2u2z';
+    const CONTAINER = 'div.x6ikm8r.x10wlt62';
     const CHILD = 'div.x6s0dn4.x78zum5.xnpuxes';
 
     const handle = node => {
@@ -20,7 +20,7 @@
     }).observe(document.body, { childList: true, subtree: true });
 
   } else {
-    const ICON = '󰣝';
+    const ICON = '󲀠';
     const FLAG = 'data-reel-hidden';
 
     const handle = node => {
