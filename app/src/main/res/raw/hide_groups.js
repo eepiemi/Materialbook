@@ -32,3 +32,34 @@
   });
 })();
 
+// Hide group posts from the main feed (mobile)
+(() => {
+  const hideGroupPosts = (nodes) => {
+    if (window.location.pathname !== '/') return;
+
+    nodes.forEach(node => {
+      if (!(node instanceof HTMLElement)) return;
+
+      const containers = node.matches('[data-tracking-duration-id]')
+        ? [node]
+        : Array.from(node.querySelectorAll?.('[data-tracking-duration-id]') || []);
+
+      containers.forEach(container => {
+        // Only match a group link in the post's header/byline (h3), not
+        // anywhere in the post body, so posts that merely mention/share a
+        // group link aren't hidden along with actual group-origin posts.
+        const header = container.querySelector('h3[data-tti-phase="-1"]');
+        if (header?.querySelector('a[href*="/groups/"]')) {
+          container.style.display = 'none';
+        }
+      });
+    });
+  };
+
+  hideGroupPosts([document.body]);
+
+  new MutationObserver(muts =>
+    muts.forEach(m => hideGroupPosts([...m.addedNodes]))
+  ).observe(document.body, { childList: true, subtree: true });
+})();
+
