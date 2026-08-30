@@ -20,14 +20,14 @@
     }).observe(document.body, { childList: true, subtree: true });
 
   } else {
-    const ICON = '󲀠';
+    const ICONS = ['󲀠', '󰣝'];
     const FLAG = 'data-reel-hidden';
 
     const handle = node => {
       if (!(node instanceof HTMLElement)) return;
       const items = node.matches('.fl.ac .native-text') ? [node] : node.querySelectorAll('.fl.ac .native-text');
       items.forEach(el => {
-        if (el.textContent.trim() === ICON) {
+        if (ICONS.includes(el.textContent.trim())) {
           const box = el.closest('[data-tracking-duration-id]');
           if (box && !box.hasAttribute(FLAG)) {
             box.setAttribute(FLAG, '1');
