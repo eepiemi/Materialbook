@@ -4,8 +4,25 @@
         (function() {
           const selector = 'div.sponsored_ad, article[data-ft*="sponsored_ad"]';
 
+          // Structural ad markers (uBO fb.txt / personal-ad-filter idea):
+          // an ad unit carries profile_name + story_message + cta-* rendering roles.
+          // Language-independent, survives label-text changes like issue #29.
+          const removeRoleAds = (scope) => {
+            const roots = [];
+            if (scope instanceof HTMLElement && scope.matches('[data-ad-rendering-role="profile_name"]')) roots.push(scope);
+            scope.querySelectorAll('[data-ad-rendering-role="profile_name"]').forEach(el => roots.push(el));
+            roots.forEach(el => {
+              const post = el.closest('div[aria-posinset], article, div[data-tracking-duration-id]');
+              if (post && post.querySelector('[data-ad-rendering-role="story_message"]') &&
+                  post.querySelector('[data-ad-rendering-role^="cta-"]')) {
+                post.remove();
+              }
+            });
+          };
+
           const removeSponsored = (root = document) => {
             root.querySelectorAll(selector).forEach(el => el.remove());
+            removeRoleAds(root);
           };
 
           removeSponsored();
@@ -70,21 +87,55 @@
         return sponsoredSet.has(cleaned);
     }
 
-    function hideLabelSpan(span) {
-        if (!isSponsoredLabel(span.textContent)) return;
-        const post = span.closest('div[data-tracking-duration-id]');
+    function isSplitSponsored(el) {
+        // uBO fb.txt idea: FB splits "Sponsored" into per-letter spans (S/p/o/n/...) to dodge
+        // text filters. Reassemble sibling single-char spans sharing the same order-style parent.
+        const parent = el.parentElement;
+        if (!parent || parent.children.length < 6) return false;
+        const letters = Array.from(parent.children)
+            .filter(c => (c.textContent || '').trim().length === 1)
+            .map(c => (c.textContent || '').trim().toLowerCase())
+            .join('');
+        return letters.includes('sponsored');
+    }
+
+    function hidePost(el) {
+        const post = el.closest ? el.closest('div[data-tracking-duration-id], div[aria-posinset]') : null;
         if (post && post.style.display !== 'none') post.style.display = 'none';
     }
 
-    function hideAllAds(root = document) {
-        if (root instanceof HTMLElement) {
-            if (root.matches('span')) hideLabelSpan(root);
-            root.querySelectorAll('span').forEach(span => {
-                if (span.closest('div[data-tracking-duration-id]')) hideLabelSpan(span);
-            });
+    function hideLabelSpan(span) {
+        if (isSponsoredLabel(span.textContent) || isSplitSponsored(span)) {
+            hidePost(span);
             return;
         }
-        document.querySelectorAll('div[data-tracking-duration-id] span').forEach(hideLabelSpan);
+        // Personal-ad-filter idea: structural triple profile_name + story_message + cta-*
+        // marks an ad unit regardless of label language.
+        if (span.matches && span.matches('[data-ad-rendering-role="profile_name"]')) {
+            const post = span.closest('div[data-tracking-duration-id], div[aria-posinset]');
+            if (post && post.querySelector('[data-ad-rendering-role="story_message"]') &&
+                post.querySelector('[data-ad-rendering-role^="cta-"]')) {
+                post.style.display = 'none';
+            }
+        }
+    }
+
+    function hideSponsoredLink(root) {
+        // uBO fb.txt idea: explicit "Sponsored" aria-label link present in old+new markup.
+        const links = [];
+        if (root instanceof HTMLElement && root.matches('a[aria-label="Sponsored"]')) links.push(root);
+        (root.querySelectorAll ? root.querySelectorAll('a[aria-label="Sponsored"]') : []).forEach(el => links.push(el));
+        links.forEach(hidePost);
+    }
+
+    function hideAllAds(root = document) {
+        hideSponsoredLink(root);
+        if (root instanceof HTMLElement) {
+            if (root.matches('span')) hideLabelSpan(root);
+            root.querySelectorAll('span').forEach(hideLabelSpan);
+            return;
+        }
+        document.querySelectorAll('div[data-tracking-duration-id] span, div[aria-posinset] span').forEach(hideLabelSpan);
     }
 
     hideAllAds();
