@@ -8,7 +8,7 @@ import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode
 
 
-const val SCRIPT_SRC = "https://raw.githubusercontent.com/eepiemi/Materialbook/refs/heads/main/app/src/main/res/raw/"
+const val SCRIPT_SRC = "https://raw.githubusercontent.com/dh6k/Materialbook/refs/heads/main/app/src/main/res/raw/"
 
 data class Script(
     val isEnabled: Boolean,

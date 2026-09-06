@@ -55,41 +55,48 @@
 
     const sponsoredRegex = new RegExp(`(${sponsoredTexts.join('|')})\\s*${specialChar}`, 'i');
 
-    function hideSponsoredContent(config) {
-        const { selector, textSelector } = config;
-        const containers = document.querySelectorAll(selector);
+    // Issue #29: new FB mobile UI shows bare "Ad ·" without the trailing PUA marker,
+    // so legacy sponsoredRegex alone misses it. Accept bare labels too (exact match
+    // after stripping trailing delimiters), then climb to the post container.
+    const sponsoredSet = new Set(sponsoredTexts.map(s => s.toLowerCase()));
 
-        containers.forEach(container => {
-            const spans = container.querySelectorAll(textSelector);
-            for (const span of spans) {
-                if (sponsoredRegex.test(span.textContent)) {
-                    container.style.display = 'none';
-                    break;
-                }
-            }
-        });
+    function isSponsoredLabel(text) {
+        if (!text) return false;
+        const t = text.trim();
+        if (!t || t.length > 64) return false;
+        if (sponsoredRegex.test(t)) return true;
+        const cleaned = t.replace(/[\s·•・.\uF000-\uF8FF\u{F0000}-\u{10FFFF}]+$/u, '').trim().toLowerCase();
+        if (cleaned.length < 2) return false; // bare single chars (e.g. "प") FP too easily
+        return sponsoredSet.has(cleaned);
     }
 
-    const configs = [
-        {
-            selector: 'div[data-type="vscroller"] div[data-tracking-duration-id]:has(> div[data-focusable="true"] div[data-mcomponent*="TextArea"] .native-text > span)',
-            textSelector: '.native-text > span'
-        },
-        {
-            selector: 'div[data-status-bar-color] > div[data-mcomponent="MContainer"] > div[data-mcomponent="MContainer"]',
-            textSelector: 'div[data-mcomponent="TextArea"] .native-text > span'
-        },
-        {
-            selector: 'div[data-mcomponent="MContainer"].m.bg-s3 div[data-mcomponent="MContainer"]',
-            textSelector: 'div[data-mcomponent="TextArea"] .native-text > span'
-        },
-    ];
+    function hideLabelSpan(span) {
+        if (!isSponsoredLabel(span.textContent)) return;
+        const post = span.closest('div[data-tracking-duration-id]');
+        if (post && post.style.display !== 'none') post.style.display = 'none';
+    }
 
-    function hideAllAds() { configs.forEach(hideSponsoredContent); }
+    function hideAllAds(root = document) {
+        if (root instanceof HTMLElement) {
+            if (root.matches('span')) hideLabelSpan(root);
+            root.querySelectorAll('span').forEach(span => {
+                if (span.closest('div[data-tracking-duration-id]')) hideLabelSpan(span);
+            });
+            return;
+        }
+        document.querySelectorAll('div[data-tracking-duration-id] span').forEach(hideLabelSpan);
+    }
 
     hideAllAds();
 
-    const observer = new MutationObserver(hideAllAds);
+    const observer = new MutationObserver(mutations => {
+        for (const mutation of mutations) {
+            for (const node of mutation.addedNodes) {
+                if (!(node instanceof HTMLElement)) continue;
+                hideAllAds(node);
+            }
+        }
+    });
     observer.observe(document.body, { childList: true, subtree: true });
 
     function containsSponsoredText(text) {
