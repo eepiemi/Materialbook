@@ -48,11 +48,17 @@ jobs:
       - name: Align and sign APK
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: |
           set -euo pipefail
-          test -n "$KEYSTORE_PASSWORD"
+          # Accept the historical KEYSTORE_PASS name as a compatibility alias.
+          store_password="${KEYSTORE_PASSWORD:-${KEYSTORE_PASS:-}}"
+          if [ -z "$store_password" ]; then
+            echo "Missing GitHub Actions secret: KEYSTORE_PASSWORD (or legacy KEYSTORE_PASS)"
+            exit 1
+          fi
           test -n "$KEY_PASSWORD"
           test -n "$KEY_ALIAS"
           unsigned="$(find app/build/outputs/apk/release -maxdepth 1 -type f -name '*unsigned.apk' -print -quit)"
@@ -62,7 +68,7 @@ jobs:
           "$build_tools/apksigner" sign \
             --ks "$RUNNER_TEMP/keystore/release.jks" \
             --ks-key-alias "$KEY_ALIAS" \
-            --ks-pass "env:KEYSTORE_PASSWORD" \
+            --ks-pass "pass:$store_password" \
             --key-pass "env:KEY_PASSWORD" \
             --v1-signing-enabled true \
             --v2-signing-enabled true \
