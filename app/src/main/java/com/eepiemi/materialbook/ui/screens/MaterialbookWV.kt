@@ -268,10 +268,6 @@ fun MaterialbookWebView(
                 androidWebSettings.apply {
                     //isDebugInspectorInfoEnabled = true
                     domStorageEnabled = true
-                    databaseEnabled = true
-                    cacheMode = android.webkit.WebSettings.LOAD_DEFAULT
-                    loadWithOverviewMode = false
-                    useWideViewPort = true
                     hideDefaultVideoPoster = true
                     mediaPlaybackRequiresUserGesture = false
                 }
@@ -304,6 +300,11 @@ fun MaterialbookWebView(
                 overScrollMode = View.OVER_SCROLL_NEVER
                 isVerticalScrollBarEnabled = false
                 isHorizontalScrollBarEnabled = false
+
+                settings.databaseEnabled = true
+                settings.cacheMode = android.webkit.WebSettings.LOAD_DEFAULT
+                settings.loadWithOverviewMode = false
+                settings.useWideViewPort = true
 
                 settings.setSupportZoom(true)
                 settings.builtInZoomControls = true
