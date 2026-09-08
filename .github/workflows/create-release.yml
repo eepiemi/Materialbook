@@ -59,6 +59,7 @@ jobs:
             echo "Missing GitHub Actions secret: KEYSTORE_PASSWORD (or legacy KEYSTORE_PASS)"
             exit 1
           fi
+          export SIGNING_STORE_PASSWORD="$store_password"
           test -n "$KEY_PASSWORD"
           test -n "$KEY_ALIAS"
           unsigned="$(find app/build/outputs/apk/release -maxdepth 1 -type f -name '*unsigned.apk' -print -quit)"
@@ -68,7 +69,7 @@ jobs:
           "$build_tools/apksigner" sign \
             --ks "$RUNNER_TEMP/keystore/release.jks" \
             --ks-key-alias "$KEY_ALIAS" \
-            --ks-pass "pass:$store_password" \
+            --ks-pass "env:SIGNING_STORE_PASSWORD" \
             --key-pass "env:KEY_PASSWORD" \
             --v1-signing-enabled true \
             --v2-signing-enabled true \
