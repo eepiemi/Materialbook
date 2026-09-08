@@ -76,7 +76,7 @@ class SettingsDataStore(private val context: Context) {
         context.dataStore.edit { it[MATERIAL_YOU] = materialYou }
     }
 
-    val amoledBlack = context.dataStore.data.map { it[AMOLED_BLACK] ?: true }
+    val amoledBlack = context.dataStore.data.map { it[AMOLED_BLACK] ?: false }
     suspend fun setAmoledBlack(amoledBlack: Boolean) {
         context.dataStore.edit { it[AMOLED_BLACK] = amoledBlack }
     }

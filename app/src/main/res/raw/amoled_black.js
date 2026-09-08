@@ -1,4 +1,7 @@
 (function() {
+  // Respect Android/WebView's system theme. AMOLED must not darken light mode.
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) return;
+
   const backgroundColorRegex = /background-color\s*:\s*(#242526|rgba\s*\(\s*36\s*,\s*37\s*,\s*38\s*,\s*1\.?0*\s*\)|rgba\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*1\.?0*\s*\)|rgb\s*\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*\)|#([0-9a-fA-F]{6}))\s*;/gi;
   const backgroundRegex = /background\s*:\s*(rgba\s*\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d*\.?\d+\s*\)|rgb\s*\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*\)|#([0-9a-fA-F]{6}))\s*;/gi;
   const colorRegex = /color\s*:\s*(rgba\s*\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d*\.?\d+\s*\)|rgb\s*\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*\)|#([0-9a-fA-F]{6}))\s*;/gi;
