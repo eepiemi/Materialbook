@@ -268,6 +268,10 @@ fun MaterialbookWebView(
                 androidWebSettings.apply {
                     //isDebugInspectorInfoEnabled = true
                     domStorageEnabled = true
+                    databaseEnabled = true
+                    cacheMode = android.webkit.WebSettings.LOAD_DEFAULT
+                    loadWithOverviewMode = false
+                    useWideViewPort = true
                     hideDefaultVideoPoster = true
                     mediaPlaybackRequiresUserGesture = false
                 }
