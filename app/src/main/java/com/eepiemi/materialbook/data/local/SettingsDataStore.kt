@@ -12,6 +12,12 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 
 class SettingsDataStore(private val context: Context) {
     companion object {
+        val HIGH_RESOLUTION = booleanPreferencesKey("high_resolution")
+        val HIGH_PERFORMANCE = booleanPreferencesKey("high_performance")
+        val VIDEO_CACHE = booleanPreferencesKey("video_cache")
+        val INTERFACE_SOUNDS = booleanPreferencesKey("interface_sounds")
+        val MANUAL_COLORS = booleanPreferencesKey("manual_colors")
+        val ACCENT = androidx.datastore.preferences.core.intPreferencesKey("accent")
         val REMOVE_ADS = booleanPreferencesKey("remove_ads")
         val ENABLE_DOWNLOAD_CONTENT = booleanPreferencesKey("enable_download_content")
         val ENABLE_COPY_TO_CLIPBOARD = booleanPreferencesKey("enable_copy_to_clipboard")
@@ -28,6 +34,20 @@ class SettingsDataStore(private val context: Context) {
         val HIDE_GROUPS = booleanPreferencesKey("hide_groups")
         val isRevertDesktop = booleanPreferencesKey("is_revert_desktop")
     }
+
+    val highResolution = context.dataStore.data.map { it[HIGH_RESOLUTION] ?: false }
+    suspend fun setHighResolution(value: Boolean) { context.dataStore.edit { it[HIGH_RESOLUTION] = value } }
+    val highPerformance = context.dataStore.data.map { it[HIGH_PERFORMANCE] ?: false }
+    suspend fun setHighPerformance(value: Boolean) { context.dataStore.edit { it[HIGH_PERFORMANCE] = value } }
+    val videoCache = context.dataStore.data.map { it[VIDEO_CACHE] ?: true }
+    suspend fun setVideoCache(value: Boolean) { context.dataStore.edit { it[VIDEO_CACHE] = value } }
+    val interfaceSounds = context.dataStore.data.map { it[INTERFACE_SOUNDS] ?: false }
+    suspend fun setInterfaceSounds(value: Boolean) { context.dataStore.edit { it[INTERFACE_SOUNDS] = value } }
+    val manualColors = context.dataStore.data.map { it[MANUAL_COLORS] ?: false }
+    suspend fun setManualColors(value: Boolean) { context.dataStore.edit { it[MANUAL_COLORS] = value } }
+
+    val accent = context.dataStore.data.map { it[ACCENT] ?: 0 }
+    suspend fun setAccent(value: Int) { context.dataStore.edit { it[ACCENT] = value.coerceIn(0, 4) } }
 
     val prefs = context.dataStore.data
 

@@ -41,12 +41,13 @@ class MainViewModel(
         val scripts = listOf(
             Script(true, R.raw.scripts, "scripts.js"), // always apply
             Script(settings.removeAds.value, R.raw.adblock, "adblock.js"),
+            Script(true, R.raw.share_content, "share_content.js"),
             Script(true, R.raw.optimize_video, "optimize_video.js"),
             Script(settings.enableDownloadContent.value, R.raw.download_content, "download_content.js"),
             Script(settings.enableCopyToClipboard.value, R.raw.copy_to_clipboard, "copy_to_clipboard.js"),
             Script(settings.stickyNavbar.value, R.raw.sticky_navbar, "sticky_navbar.js"),
             Script(!settings.pinchToZoom.value, R.raw.pinch_to_zoom, "pinch_to_zoom.js"),
-            Script(settings.materialYou.value, R.raw.material_you, "material_you.js"),
+            Script(settings.materialYou.value || settings.manualColors.value, R.raw.material_you, "material_you.js"),
             Script(settings.amoledBlack.value, R.raw.amoled_black, "amoled_black.js"),
             Script(settings.hideSuggested.value, R.raw.hide_suggested, "hide_suggested.js"),
             Script(settings.hideReels.value, R.raw.hide_reels, "hide_reels.js"),
@@ -57,7 +58,7 @@ class MainViewModel(
 
         viewModelScope.launch {
             _scripts.value =
-                fetchScripts(
+                "window.BreeBookVideoOptions = {highResolution: ${settings.highResolution.value}, cache: ${settings.videoCache.value}};\n" + fetchScripts(
                     scripts = scripts,
                     fallbackContent = { resId ->
                         resources.openRawResource(resId).bufferedReader()

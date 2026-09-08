@@ -2,6 +2,9 @@ package com.eepiemi.materialbook.ui.screens
 
 import android.content.Intent
 import android.view.View
+import androidx.compose.runtime.DisposableEffect
+import android.media.AudioManager
+import android.content.Context
 import android.webkit.CookieManager
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -60,11 +63,42 @@ fun MaterialbookWebView(
     val context = LocalContext.current
     val activity = LocalActivity.current
     val resources = LocalResources.current
+    val highPerformance by settingsVM.highPerformance.collectAsState()
+    DisposableEffect(activity, highPerformance) {
+        val window = activity?.window
+        val originalMode = window?.attributes?.preferredDisplayModeId ?: 0
+        val originalRate = window?.attributes?.preferredRefreshRate ?: 0f
+        if (window != null) {
+            @Suppress("DEPRECATION")
+            val display = (context.getSystemService(Context.WINDOW_SERVICE) as android.view.WindowManager).defaultDisplay
+            val current = display.mode
+            val best = display.supportedModes.filter {
+                it.physicalWidth == current.physicalWidth && it.physicalHeight == current.physicalHeight
+            }.maxByOrNull { it.refreshRate }
+            window.attributes = window.attributes.apply {
+                preferredDisplayModeId = if (highPerformance) best?.modeId ?: 0 else 0
+                preferredRefreshRate = if (highPerformance) best?.refreshRate ?: 0f else 0f
+            }
+        }
+        onDispose {
+            if (window != null) window.attributes = window.attributes.apply {
+                preferredDisplayModeId = originalMode
+                preferredRefreshRate = originalRate
+            }
+        }
+    }
 
     val state = rememberSaveableWebViewState(url)
     val navigator = rememberWebViewNavigator(
         requestInterceptor = ExternalRequestInterceptor { externalUrl ->
-            val intent = Intent(Intent.ACTION_VIEW, externalUrl.toUri())
+            val uri = externalUrl.toUri()
+            val sharedUrl = if (uri.scheme == "breebook-share") uri.getQueryParameter("url") else null
+            val intent = if (sharedUrl != null && sharedUrl.toUri().scheme in listOf("https", "http")) {
+                Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, com.eepiemi.materialbook.utils.fbRedirectSanitizer(sharedUrl))
+                }, null)
+            } else Intent(Intent.ACTION_VIEW, uri)
             runCatching {
                 context.startActivity(intent)
             }.onFailure {
@@ -236,6 +270,11 @@ fun MaterialbookWebView(
 
     val primaryColor = colorScheme.primary.toArgb()
     val onPrimaryColor  = colorScheme.onPrimary.toArgb()
+    LaunchedEffect(primaryColor, onPrimaryColor) {
+        state.nativeWebView.addJavascriptInterface(
+            MaterialYouBridge(primaryColor, onPrimaryColor), "MaterialYouBridge"
+        )
+    }
 
     WebView(
         modifier = Modifier
@@ -275,7 +314,15 @@ fun MaterialbookWebView(
 
             webView.apply {
                 addJavascriptInterface(
-                    MaterialbookSettings { settingsToggle = true },
+                    MaterialbookSettings {
+                        activity?.runOnUiThread {
+                            if (settingsVM.interfaceSounds.value) {
+                                (context.getSystemService(Context.AUDIO_SERVICE) as AudioManager)
+                                    .playSoundEffect(AudioManager.FX_KEY_CLICK)
+                            }
+                            settingsToggle = true
+                        }
+                    },
                     "SettingsBridge"
                 )
                 addJavascriptInterface(

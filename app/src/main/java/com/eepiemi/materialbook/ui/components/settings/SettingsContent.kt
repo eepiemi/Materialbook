@@ -76,6 +76,38 @@ fun SettingsContent(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        SettingsGroup(items = listOf(
+                SettingsItem(icon = Icons.Outlined.Palette,
+                    title = stringResource(R.string.high_resolution_title),
+                    supportingText = stringResource(R.string.high_resolution_description),
+                    isActive = viewModel.highResolution.collectAsState().value,
+                    onClick = { viewModel.setHighResolution(!viewModel.highResolution.value) }),
+                SettingsItem(icon = Icons.Outlined.Palette,
+                    title = stringResource(R.string.high_performance_title),
+                    supportingText = stringResource(R.string.high_performance_description),
+                    isActive = viewModel.highPerformance.collectAsState().value,
+                    onClick = { viewModel.setHighPerformance(!viewModel.highPerformance.value) }),
+                SettingsItem(icon = Icons.Outlined.Palette,
+                    title = stringResource(R.string.video_cache_title),
+                    supportingText = stringResource(R.string.video_cache_description),
+                    isActive = viewModel.videoCache.collectAsState().value,
+                    onClick = { viewModel.setVideoCache(!viewModel.videoCache.value) }),
+                SettingsItem(icon = Icons.Outlined.Palette,
+                    title = stringResource(R.string.interface_sounds_title),
+                    supportingText = stringResource(R.string.interface_sounds_description),
+                    isActive = viewModel.interfaceSounds.collectAsState().value,
+                    onClick = { viewModel.setInterfaceSounds(!viewModel.interfaceSounds.value) }),
+                SettingsItem(icon = Icons.Outlined.Palette,
+                    title = stringResource(R.string.manual_colors_title),
+                    supportingText = stringResource(R.string.manual_colors_description),
+                    isActive = viewModel.manualColors.collectAsState().value,
+                    onClick = { viewModel.setManualColors(!viewModel.manualColors.value) }),
+                SettingsItem(icon = Icons.Outlined.Palette,
+                    title = stringResource(R.string.accent_title),
+                    supportingText = stringResource(listOf(R.string.accent_blue, R.string.accent_green, R.string.accent_purple, R.string.accent_rose, R.string.accent_amber)[viewModel.accent.collectAsState().value.coerceIn(0, 4)]),
+                    isActive = null,
+                    onClick = { viewModel.setAccent((viewModel.accent.value + 1) % 5); viewModel.setManualColors(true) })
+        ))
         SettingsGroup(
             items = listOf(
                 SettingsItem(

@@ -36,4 +36,20 @@
     <string name="enable_download_button_on_media_view">Activar botón de descarga en vista de medios</string>
     <string name="enable_copy_to_clipboard_button_on_media_view">Activar botón de copiar al portapapeles en vista de medios</string>
     <string name="materialbook_settings">Configuración de Materialbook</string>
+    <string name="high_resolution_title">Resolución alta</string>
+    <string name="high_resolution_description">Prefiere la mayor calidad disponible en Facebook. Consume más datos; HD no siempre está disponible.</string>
+    <string name="high_performance_title">Modo alto rendimiento</string>
+    <string name="high_performance_description">Solicita la mayor frecuencia de pantalla. Android puede limitarla; consume más batería.</string>
+    <string name="video_cache_title">Precarga de videos</string>
+    <string name="video_cache_description">Prepara videos cercanos y reutiliza la caché de WebView cuando el servidor lo permite.</string>
+    <string name="interface_sounds_title">Sonidos de interfaz</string>
+    <string name="interface_sounds_description">Sonidos suaves del sistema al abrir ajustes. Respeta los efectos de sonido del sistema.</string>
+    <string name="manual_colors_title">Colores manuales</string>
+    <string name="manual_colors_description">Usa el color elegido en lugar de los colores del fondo de pantalla.</string>
+    <string name="accent_title">Color de acento · toca para cambiar</string>
+    <string name="accent_blue">Azul</string>
+    <string name="accent_green">Verde</string>
+    <string name="accent_purple">Morado</string>
+    <string name="accent_rose">Rosa</string>
+    <string name="accent_amber">Ámbar</string>
 </resources>

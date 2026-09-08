@@ -1,0 +1,23 @@
+name: Verify Android changes
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+      - name: Check JavaScript syntax
+        run: |
+          node --check app/src/main/res/raw/optimize_video.js
+          node --check app/src/main/res/raw/share_content.js
+      - name: Build and test share links
+        run: ./gradlew --no-daemon testDebugUnitTest --tests com.eepiemi.materialbook.ShareLinkTest assembleDebug

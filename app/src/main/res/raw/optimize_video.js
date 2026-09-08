@@ -1,32 +1,64 @@
-/* Prefer the best source exposed by Facebook and avoid WebView data-saving behaviour. */
+/* Progressive enhancement only: never replace Facebook's adaptive/blob player. */
 (() => {
   'use strict';
-  const mark = 'data-materialbook-video-optimized';
-  const score = source => {
-    const text = `${source.getAttribute('src') || ''} ${source.getAttribute('data-video-url') || ''} ${source.getAttribute('data-quality') || ''}`;
-    const match = text.match(/(?:^|[^0-9])([0-9]{3,4})p(?:[^0-9]|$)/i);
-    return match ? Number(match[1]) : 0;
+  if (window.__breeBookVideo) { window.__breeBookVideo.refresh(); return; }
+  const options = window.BreeBookVideoOptions || {};
+  const tracked = new Set();
+  const nearby = new WeakSet();
+  const enhanced = new WeakMap();
+  const quality = source => {
+    const label = `${source.getAttribute('data-quality') || ''} ${source.getAttribute('label') || ''}`;
+    return Number(label.match(/(\d{3,4})p?/)?.[1] || 0);
   };
-  const optimize = root => {
-    if (!(root instanceof Element || root === document)) return;
-    root.querySelectorAll('video').forEach(video => {
-      video.setAttribute('playsinline', '');
-      video.setAttribute('webkit-playsinline', '');
-      video.preload = 'auto';
-      video.disablePictureInPicture = false;
-      video.style.imageRendering = 'auto';
-      const sources = [...video.querySelectorAll('source')].sort((a, b) => score(b) - score(a));
-      if (sources[0] && score(sources[0]) > 0 && video.src !== sources[0].src) video.src = sources[0].src;
-      if (!video.hasAttribute(mark)) {
-        video.setAttribute(mark, '1');
-        video.addEventListener('loadedmetadata', () => {
-          if (video.videoWidth >= 720) video.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
-        }, { once: true });
-      }
+  const preferHD = video => {
+    if (!options.highResolution || video.currentSrc.startsWith('blob:') || video.src.startsWith('blob:')) return;
+    // Only select an explicitly labelled alternative before playback starts.
+    if (video.currentTime > 0 || !video.paused) return;
+    const sources = [...video.querySelectorAll('source')].filter(s =>
+      /^https?:/.test(s.src) && (!s.type || video.canPlayType(s.type)));
+    const best = sources.sort((a, b) => quality(b) - quality(a))[0];
+    if (!best || quality(best) < 720 || video.src === best.src || enhanced.get(video) === best.src) return;
+    enhanced.set(video, best.src);
+    const original = video.getAttribute('src');
+    video.addEventListener('error', () => {
+      if (original === null) video.removeAttribute('src'); else video.setAttribute('src', original);
+      video.load();
+    }, { once: true });
+    video.src = best.src;
+  };
+  const configure = video => {
+    video.setAttribute('playsinline', '');
+    video.preload = options.cache && nearby.has(video) && !document.hidden ? 'auto' : 'metadata';
+    preferHD(video);
+  };
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(({ target, isIntersecting }) => {
+      if (isIntersecting) nearby.add(target); else nearby.delete(target);
+      configure(target);
+    });
+  }, { rootMargin: '200px 0px' });
+  const scan = root => {
+    const videos = root instanceof HTMLVideoElement ? [root] : root.querySelectorAll?.('video') || [];
+    videos.forEach(video => {
+      if (tracked.has(video)) return;
+      tracked.add(video);
+      configure(video);
+      observer.observe(video);
     });
   };
-  optimize(document);
-  const observer = new MutationObserver(mutations => mutations.forEach(m => m.addedNodes.forEach(node => node instanceof Element && optimize(node))));
-  const start = () => document.body && observer.observe(document.body, { childList: true, subtree: true });
-  if (document.body) start(); else document.addEventListener('DOMContentLoaded', start, { once: true });
+  const cleanup = () => tracked.forEach(video => {
+    if (!video.isConnected) { observer.unobserve(video); tracked.delete(video); }
+  });
+  const mutations = new MutationObserver(records => {
+    records.forEach(record => record.addedNodes.forEach(scan));
+    cleanup();
+  });
+  const refresh = () => { cleanup(); tracked.forEach(configure); };
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) tracked.forEach(video => video.pause());
+    refresh();
+  });
+  scan(document);
+  mutations.observe(document.documentElement, { childList: true, subtree: true });
+  window.__breeBookVideo = { refresh };
 })();

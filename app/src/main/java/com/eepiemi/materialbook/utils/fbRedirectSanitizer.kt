@@ -1,35 +1,33 @@
 package com.eepiemi.materialbook.utils
 
-import java.net.URL
+import java.net.URI
 import java.net.URLDecoder
-import java.net.URLEncoder
 
+/** Preserve raw query values: encoding an already escaped URL corrupts shared links. */
 fun fbRedirectSanitizer(link: String): String {
-    try {
-        var url = URL(link)
-
-        if (url.host == "l.facebook.com" && url.path == "/l.php") {
-            val params = url.query.split("&").associate {
-                val (key, value) = it.split("=", limit = 2)
-                key to URLDecoder.decode(value, "UTF-8")
+    var current = link
+    repeat(4) {
+        val uri = runCatching { URI(current) }.getOrNull() ?: return current
+        if (uri.scheme !in listOf("https", "http") || uri.host == null) return current
+        if (uri.host.lowercase() in setOf("l.facebook.com", "lm.facebook.com") && uri.path == "/l.php") {
+            val target = uri.rawQuery?.split("&")?.firstOrNull { it.substringBefore("=") == "u" }
+                ?.substringAfter("=", "")
+            val decoded = target?.let { runCatching { URLDecoder.decode(it, "UTF-8") }.getOrNull() }
+            val destination = decoded?.let { runCatching { URI(it) }.getOrNull() }
+            if (destination?.scheme in listOf("http", "https") && destination?.host != null) {
+                current = decoded!!
+                return@repeat
             }
-            url = URL(params["u"] ?: return link)
         }
-
-        val params = url.query?.split("&")
-            ?.filter { !it.startsWith("fbclid=") }
-            ?.joinToString("&") { param ->
-                val (key, value) = param.split("=", limit = 2)
-                "$key=${URLEncoder.encode(value, "UTF-8")}"
-            }
-
+        val query = uri.rawQuery?.split("&")?.filterNot {
+            it.substringBefore("=") == "fbclid"
+        }?.joinToString("&")
         return buildString {
-            append("${url.protocol}://${url.host}")
-            if (url.port != -1 && url.port != url.defaultPort) append(":${url.port}")
-            append(url.path)
-            if (!params.isNullOrBlank()) append("?").append(params)
+            append(uri.scheme).append("://").append(uri.rawAuthority)
+            append(uri.rawPath.orEmpty())
+            if (!query.isNullOrEmpty()) append('?').append(query)
+            uri.rawFragment?.let { append('#').append(it) }
         }
-    } catch (_: Exception) {
-        return link
     }
+    return current
 }

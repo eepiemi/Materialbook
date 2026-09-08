@@ -1,6 +1,9 @@
 package com.eepiemi.materialbook
 
 import android.os.Bundle
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.eepiemi.materialbook.ui.viewmodel.SettingsViewModel
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -16,7 +19,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val intentUrl = intent?.data?.toString()
-            MaterialbookTheme {
+            val settings: SettingsViewModel = viewModel()
+            MaterialbookTheme(
+                dynamicColor = !settings.manualColors.collectAsState().value,
+                accent = settings.accent.collectAsState().value
+            ) {
                 MaterialbookWebView(
                     url = intentUrl
                         ?: "https://facebook.com/"

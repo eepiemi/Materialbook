@@ -42,4 +42,20 @@
     <string name="materialbook_settings">Materialbook settings</string>
     <string name="support_my_work">Support my work! ☕</string>
     <string name="not_supported">Not supported</string>
+    <string name="high_resolution_title">High resolution</string>
+    <string name="high_resolution_description">Prefer the highest quality exposed by Facebook. Uses more data; HD is not always available.</string>
+    <string name="high_performance_title">High performance</string>
+    <string name="high_performance_description">Request the display’s highest refresh rate. Android may limit it; uses more battery.</string>
+    <string name="video_cache_title">Video preload</string>
+    <string name="video_cache_description">Buffer nearby videos and reuse the standard WebView cache when the server allows it.</string>
+    <string name="interface_sounds_title">Interface sounds</string>
+    <string name="interface_sounds_description">Soft system sounds when opening settings. Respects system sound effects.</string>
+    <string name="manual_colors_title">Manual colors</string>
+    <string name="manual_colors_description">Use your selected accent instead of wallpaper colors.</string>
+    <string name="accent_title">Accent color · tap to change</string>
+    <string name="accent_blue">Blue</string>
+    <string name="accent_green">Green</string>
+    <string name="accent_purple">Purple</string>
+    <string name="accent_rose">Rose</string>
+    <string name="accent_amber">Amber</string>
 </resources>

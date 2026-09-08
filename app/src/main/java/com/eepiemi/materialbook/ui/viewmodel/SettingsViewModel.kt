@@ -33,6 +33,19 @@ class SettingsViewModel(
 
     private val initialPrefs = runBlocking { dataStore.prefs.first() }
 
+    val highResolution = dataStore.highResolution.stateIn(viewModelScope, SharingStarted.Eagerly, initialPrefs[SettingsDataStore.HIGH_RESOLUTION] ?: false)
+    fun setHighResolution(value: Boolean) { viewModelScope.launch { dataStore.setHighResolution(value) } }
+    val highPerformance = dataStore.highPerformance.stateIn(viewModelScope, SharingStarted.Eagerly, initialPrefs[SettingsDataStore.HIGH_PERFORMANCE] ?: false)
+    fun setHighPerformance(value: Boolean) { viewModelScope.launch { dataStore.setHighPerformance(value) } }
+    val videoCache = dataStore.videoCache.stateIn(viewModelScope, SharingStarted.Eagerly, initialPrefs[SettingsDataStore.VIDEO_CACHE] ?: true)
+    fun setVideoCache(value: Boolean) { viewModelScope.launch { dataStore.setVideoCache(value) } }
+    val interfaceSounds = dataStore.interfaceSounds.stateIn(viewModelScope, SharingStarted.Eagerly, initialPrefs[SettingsDataStore.INTERFACE_SOUNDS] ?: false)
+    fun setInterfaceSounds(value: Boolean) { viewModelScope.launch { dataStore.setInterfaceSounds(value) } }
+    val manualColors = dataStore.manualColors.stateIn(viewModelScope, SharingStarted.Eagerly, initialPrefs[SettingsDataStore.MANUAL_COLORS] ?: false)
+    fun setManualColors(value: Boolean) { viewModelScope.launch { dataStore.setManualColors(value) } }
+    val accent = dataStore.accent.stateIn(viewModelScope, SharingStarted.Eagerly, initialPrefs[SettingsDataStore.ACCENT] ?: 0)
+    fun setAccent(value: Int) { viewModelScope.launch { dataStore.setAccent(value) } }
+
     val removeAds = dataStore.removeAds.stateIn(
         scope = viewModelScope,
         initialValue = initialPrefs[REMOVE_ADS] ?: true,
@@ -75,7 +88,7 @@ class SettingsViewModel(
     )
     val amoledBlack = dataStore.amoledBlack.stateIn(
         scope = viewModelScope,
-        initialValue = initialPrefs[AMOLED_BLACK] ?: true,
+        initialValue = initialPrefs[AMOLED_BLACK] ?: false,
         started = SharingStarted.WhileSubscribed()
     )
     val hideSuggested = dataStore.hideSuggested.stateIn(
