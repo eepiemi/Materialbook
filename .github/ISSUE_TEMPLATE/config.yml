@@ -1,6 +1,9 @@
 blank_issues_enabled: false
 
-contact_links:
-  - name: 💬 Ask a Question
-    url: https://github.com/eepiemi/Materialbook/discussions
-    about: Ask general questions or get help
+# No contact_links configured — GitHub Discussions isn't enabled on this fork.
+# If you enable it later (Settings > Features > Discussions), re-add:
+#
+# contact_links:
+#   - name: 💬 Ask a Question
+#     url: https://github.com/ofirc73/Materialbook/discussions
+#     about: Ask general questions or get help

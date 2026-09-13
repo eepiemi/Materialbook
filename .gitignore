@@ -14,3 +14,6 @@ local.properties
 /build/
 /app/build/
 *.apk
+.vscode/settings.json
+astryxbook-release.b64
+astryxbook-release.jks

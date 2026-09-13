@@ -11,10 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.eepiemi.materialbook.R
@@ -34,7 +32,7 @@ fun NetworkErrorDialog(
         ) {
             Text(
                 stringResource(R.string.network_error_title),
-                fontSize = 24.sp,
+                style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center,
                 color = Color.White,
                 modifier = Modifier
@@ -44,7 +42,7 @@ fun NetworkErrorDialog(
 
             Text(
                 stringResource(R.string.network_error_description),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier
@@ -56,11 +54,7 @@ fun NetworkErrorDialog(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { onDismiss() }
             ) {
-                Text(
-                    stringResource(R.string.ok),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                )
+                Text(stringResource(R.string.ok))
             }
         }
     }

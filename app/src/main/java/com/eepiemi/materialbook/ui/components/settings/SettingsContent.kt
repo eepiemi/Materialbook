@@ -1,10 +1,8 @@
 package com.eepiemi.materialbook.ui.components.settings
 
-import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,7 +29,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,12 +38,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.eepiemi.materialbook.R
 import com.eepiemi.materialbook.ui.viewmodel.SettingsViewModel
@@ -57,7 +52,6 @@ fun SettingsContent(
     modifier: Modifier,
     viewModel: SettingsViewModel = viewModel()
 ) {
-    val context = LocalContext.current
     var isOpenDialog by rememberSaveable { mutableStateOf(false) }
 
     val removeAds = viewModel.removeAds.collectAsState()
@@ -155,23 +149,6 @@ fun SettingsContent(
                 )
             )
         )
-
-        Box(modifier = Modifier.fillMaxWidth()) {
-            TextButton(
-                modifier = Modifier.align(Alignment.Center),
-                onClick = {
-                    val bmacUrl = "https://buymeacoffee.com/eepiemi"
-                    val intent = Intent(Intent.ACTION_VIEW, bmacUrl.toUri())
-                    context.startActivity(intent)
-                }
-            ) {
-                Text(
-                    stringResource(R.string.support_my_work),
-                    modifier = Modifier.padding(4.dp),
-                    maxLines = 1
-                )
-            }
-        }
 
     }
 

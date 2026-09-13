@@ -11,11 +11,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
+// Facebook's own brand blue — used as the native chrome color when
+// Material You dynamic theming is off (the "original" Facebook look).
+// internal (not private): ThemeTest asserts against this directly.
+internal val FacebookBlue = Color(0xFF1877F2)
+
+internal val DarkColorScheme = darkColorScheme(
+    primary = FacebookBlue,
     onBackground = Color.White,
     secondary = Color.DarkGray
 )
-private val LightColorScheme = lightColorScheme(
+internal val LightColorScheme = lightColorScheme(
+    primary = FacebookBlue,
     onBackground = Color.Black,
     secondary = Color.LightGray
 )
@@ -23,7 +30,7 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun MaterialbookTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

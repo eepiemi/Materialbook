@@ -1,5 +1,5 @@
 <p align="middle">
-    <img src='./fastlane/metadata/android/en-US/images/featureGraphic.png' alt="Materialbook banner" width="100%">
+    <img src='./fastlane/metadata/android/en-US/images/featureGraphic.png' alt="Astryxbook banner" width="100%">
 </p>
 
 <h1 align="middle">
@@ -7,31 +7,26 @@
 </h1>
 
 <p align="middle">
-    <a href='https://github.com/eepiemi/Materialbook/releases/latest'><img alt='Download' height='40' src='./assets/download.svg'/></a>
-    <a href='https://grev.shehryar.ae/?owner=eepiemi&repo=Materialbook'><img alt='Downloads count' height='40' src='https://downloads-count.eepiemi.workers.dev'/></a>
+    <a href='https://github.com/ofirc73/Materialbook/releases/latest'><img alt='Download' height='40' src='./assets/download.svg'/></a>
+    <a href='https://grev.shehryar.ae/?owner=ofirc73&repo=Materialbook'><img alt='Downloads count' height='40' src='https://downloads-count.eepiemi.workers.dev'/></a>
 </p>
 
 <h2 align="middle">
-    🙋 Have issues? Enjoy the app? ☕
+    🙋 Have issues?
 </h2>
 
 <p align="middle">
-    <a href='https://github.com/eepiemi/Materialbook/issues/new/choose'><img alt='Open issue' height='40' src='./assets/open_issue.svg'/></a>
-    <a href='https://buymeacoffee.com/eepiemi'><img alt='Buy me a coffee!' height='40' src='./assets/buy_me_a_coffee.svg'/></a>
+    <a href='https://github.com/ofirc73/Materialbook/issues/new/choose'><img alt='Open issue' height='40' src='./assets/open_issue.svg'/></a>
 </p>
 
 <h2 align="middle">
     ✏️ This fork:
 </h2>
 
-*  Implements Material You theming for:
-    *  The facebook app itself
-    *  The app icon
-    *  The settings page
-    *  The "No internet" screen
-*  Fixes AMOLED Black
-*  Makes the splash screen and the "No internet" screen AMOLED Black
-*  Changes some minor things for aesthetics purposes
+*  Renames the app to **Astryxbook**, with an original "A" monogram launcher icon (Facebook blue, but not Facebook's own trademarked logo — avoids impersonation/trademark issues)
+*  Restyles it to match **Facebook's own original Android look** — Material You theming and AMOLED Black now ship **off by default**, using Facebook's native blue instead of your wallpaper colors out of the box
+*  Both settings remain available as opt-in toggles for anyone who preferred the upstream [Materialbook](https://github.com/eepiemi/Materialbook) look
+*  Everything below still applies whenever those toggles are switched on
 
 <h2 align="middle">
     ⚙️ Features
@@ -58,10 +53,10 @@ If enabled, the app:
 1.  **Clone the repository**
     * In Android Studio:
       * File > New > Project from Version Control
-      * Paste `https://github.com/eepiemi/Materialbook.git` and clone.
+      * Paste `https://github.com/ofirc73/Materialbook.git` and clone.
     * Or via terminal: 
     ```
-    git clone https://github.com/eepiemi/Materialbook.git
+    git clone https://github.com/ofirc73/Materialbook.git
     cd Materialbook
     ``` 
 2.  **Open in Android Studio.** (only if cloned via terminal)
@@ -70,7 +65,17 @@ If enabled, the app:
 4.  **Run the app** in a device or emulator.
 
 <h2 align="middle">
+    ✅ Testing
+</h2>
+
+Covers the rebrand and default-behavior changes in this fork — defaults (Material You/AMOLED off), theme colors, app identity/strings, launcher icon, applicationId, and the pinned scripts source.
+
+*  **Unit tests** (no device/emulator needed): `./gradlew test`
+*  **Instrumented tests** (needs a connected device or running emulator): `./gradlew connectedAndroidTest`
+
+<h2 align="middle">
     💗 Acknowledgement:
 </h2>
 
+*  This is a fork of [Materialbook](https://github.com/eepiemi/Materialbook) by eepiemi, itself a fork of [Nobook](https://github.com/ycngmn/Nobook) by ycngmn
 *  [@KevinnZou/compose-webview-multiplatform](https://github.com/KevinnZou/compose-webview-multiplatform)  
