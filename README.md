@@ -7,8 +7,8 @@
 </h1>
 
 <p align="middle">
-    <a href='https://github.com/ofirc73/Materialbook/releases/latest'><img alt='Download' height='40' src='./assets/download.svg'/></a>
-    <a href='https://grev.shehryar.ae/?owner=ofirc73&repo=Materialbook'><img alt='Downloads count' height='40' src='https://downloads-count.eepiemi.workers.dev'/></a>
+    <a href='https://github.com/ofirc73/AstryxBook/releases/latest'><img alt='Download' height='40' src='./assets/download.svg'/></a>
+    <a href='https://grev.shehryar.ae/?owner=ofirc73&repo=AstryxBook'><img alt='Downloads count' height='40' src='https://downloads-count.eepiemi.workers.dev'/></a>
 </p>
 
 <h2 align="middle">
@@ -16,7 +16,7 @@
 </h2>
 
 <p align="middle">
-    <a href='https://github.com/ofirc73/Materialbook/issues/new/choose'><img alt='Open issue' height='40' src='./assets/open_issue.svg'/></a>
+    <a href='https://github.com/ofirc73/AstryxBook/issues/new/choose'><img alt='Open issue' height='40' src='./assets/open_issue.svg'/></a>
 </p>
 
 <h2 align="middle">
@@ -53,11 +53,11 @@ If enabled, the app:
 1.  **Clone the repository**
     * In Android Studio:
       * File > New > Project from Version Control
-      * Paste `https://github.com/ofirc73/Materialbook.git` and clone.
+      * Paste `https://github.com/ofirc73/AstryxBook.git` and clone.
     * Or via terminal: 
     ```
-    git clone https://github.com/ofirc73/Materialbook.git
-    cd Materialbook
+    git clone https://github.com/ofirc73/AstryxBook.git
+    cd AstryxBook
     ``` 
 2.  **Open in Android Studio.** (only if cloned via terminal)
     * Select Open an Existing Project and choose the cloned folder.

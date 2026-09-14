@@ -15,7 +15,7 @@ class ScriptSourceTest {
 
     @Test
     fun scriptSrcPointsAtOwnFork() {
-        assertTrue(SCRIPT_SRC.contains("ofirc73/Materialbook"))
+        assertTrue(SCRIPT_SRC.contains("ofirc73/AstryxBook"))
     }
 
     @Test
