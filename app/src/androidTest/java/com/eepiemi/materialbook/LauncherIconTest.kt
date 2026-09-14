@@ -1,6 +1,7 @@
 package com.eepiemi.materialbook
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -19,10 +20,20 @@ import org.junit.runner.RunWith
  * renders blank/broken at runtime — so these load each resource for real
  * rather than just checking the XML is well-formed.
  *
- * Note: this can only exercise whichever ic_launcher variant the test
- * device's own API level resolves to. It can't force-load the
- * mipmap-anydpi (pre-API26) fallback specifically on a 26+ test device —
- * see the mipmap-anydpi/ic_launcher.xml comment for that gap.
+ * ic_launcher_background/foreground colors are defined in FOUR qualified
+ * files (values, values-night, values-v31, values-night-v31) that must all
+ * agree. A previous bug: the two -v31 variants pulled Android's dynamic
+ * system_accent1_* colors unconditionally, so the icon itself silently
+ * reverted to Material You on any API31+ device — caught only because the
+ * CI emulator happened to boot in dark mode that day. Forcing both night
+ * states explicitly here so it can't depend on ambient device state again.
+ *
+ * Still can't force the API-level qualifier itself (unlike night mode,
+ * that's tied to the real running OS version, not spoofable via
+ * Configuration) — so on a 31+ test device this exercises values-v31 and
+ * values-night-v31 but never plain values/values-night, and vice versa on
+ * a pre-31 device. Can't force-load the mipmap-anydpi (pre-API26) adaptive
+ * icon fallback either, for the same reason — see mipmap-anydpi/ic_launcher.xml.
  */
 @RunWith(AndroidJUnit4::class)
 class LauncherIconTest {
@@ -30,19 +41,42 @@ class LauncherIconTest {
     private val context: Context
         get() = ApplicationProvider.getApplicationContext()
 
+    private fun contextFor(nightMode: Int): Context {
+        val baseContext = ApplicationProvider.getApplicationContext<Context>()
+        val config = Configuration(baseContext.resources.configuration)
+        config.uiMode = (config.uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or nightMode
+        return baseContext.createConfigurationContext(config)
+    }
+
     @Test
-    fun backgroundColorIsFacebookBlue() {
+    fun backgroundColorIsFacebookBlueInLightMode() {
         assertEquals(
             0xFF1877F2.toInt(),
-            ContextCompat.getColor(context, R.color.ic_launcher_background)
+            ContextCompat.getColor(contextFor(Configuration.UI_MODE_NIGHT_NO), R.color.ic_launcher_background)
         )
     }
 
     @Test
-    fun foregroundColorIsWhite() {
+    fun backgroundColorIsFacebookBlueInDarkMode() {
+        assertEquals(
+            0xFF1877F2.toInt(),
+            ContextCompat.getColor(contextFor(Configuration.UI_MODE_NIGHT_YES), R.color.ic_launcher_background)
+        )
+    }
+
+    @Test
+    fun foregroundColorIsWhiteInLightMode() {
         assertEquals(
             0xFFFFFFFF.toInt(),
-            ContextCompat.getColor(context, R.color.ic_launcher_foreground)
+            ContextCompat.getColor(contextFor(Configuration.UI_MODE_NIGHT_NO), R.color.ic_launcher_foreground)
+        )
+    }
+
+    @Test
+    fun foregroundColorIsWhiteInDarkMode() {
+        assertEquals(
+            0xFFFFFFFF.toInt(),
+            ContextCompat.getColor(contextFor(Configuration.UI_MODE_NIGHT_YES), R.color.ic_launcher_foreground)
         )
     }
 

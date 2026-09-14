@@ -74,3 +74,15 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
+
+// AdblockTest drives real browsers against live facebook.com and needs a
+// manually-generated login session (see app/src/test/resources/Readme.md) —
+// it was never meant to run unattended. Excluded from the default `test`
+// task (local and CI alike); run it explicitly with
+// `./gradlew test --tests "com.eepiemi.materialbook.AdblockTest"` once
+// auth.json is set up.
+tasks.withType<Test>().configureEach {
+    filter {
+        excludeTestsMatching("com.eepiemi.materialbook.AdblockTest")
+    }
+}
