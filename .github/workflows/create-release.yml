@@ -26,15 +26,10 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
-      - name: Run Unit Tests
+      - name: Run Unit Tests and Build APK
         run: |
           chmod +x gradlew
-          ./gradlew test --stacktrace || { echo "Unit tests failed"; exit 1; }
-
-      - name: Build APK
-        run: |
-          chmod +x gradlew
-          ./gradlew assembleRelease --stacktrace || { echo "Gradle build failed"; exit 1; }
+          ./gradlew test assembleRelease --stacktrace
           ls -R app/build/outputs/apk || echo "No APK directory found"
 
       - name: Set up Keystore
@@ -103,6 +98,33 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      # Caches the AVD image + boot snapshot, not just SDK downloads — a cache
+      # hit skips both re-downloading build-tools/platform/emulator/system-image
+      # AND the cold boot itself (restores from snapshot instead). Key is static
+      # (not hashed on source) since the AVD content only depends on the
+      # api-level/target/arch/profile choice below, not on this repo's code.
+      - name: AVD cache
+        uses: actions/cache@v5
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-34-google_apis-x86_64-pixel_6
+
+      - name: Create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          disable-animations: false
+          script: echo "Generated AVD snapshot for caching."
+
       - name: Run Instrumented Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -110,6 +132,8 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel_6
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
           disable-animations: true
           script: |
             chmod +x gradlew
