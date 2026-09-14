@@ -15,6 +15,6 @@ local.properties
 /app/build/
 *.apk
 .vscode/settings.json
+PR_BODY.md
 astryxbook-release.b64
 astryxbook-release.jks
-PR_BODY.md
