@@ -17,3 +17,4 @@ local.properties
 .vscode/settings.json
 astryxbook-release.b64
 astryxbook-release.jks
+PR_BODY.md
