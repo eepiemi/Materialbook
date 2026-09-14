@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Materialbook" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Theme.Astryxbook" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@android:color/background_dark</item>
-        <item name="android:colorControlActivated">#d0bcff</item>
+        <item name="android:colorControlActivated">#1877F2</item>
     </style>
 </resources>

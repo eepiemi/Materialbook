@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Materialbook</string>
+    <string name="app_name">Astryxbook</string>
     <string name="apply_immediately">立即應用？</string>
     <string name="remove_ads_title">移除廣告</string>
     <string name="download_content_title">下載內容</string>
@@ -10,7 +10,7 @@
     <string name="amoled_black_title">純黑</string>
     <string name="customize_feed_title">首頁自定義</string>
     <string name="network_error_title">連線到網路</string>
-    <string name="network_error_description">使用 Materialbook 前，請開啟行動數據或連接 Wi-Fi。</string>
+    <string name="network_error_description">使用 Astryxbook 前，請開啟行動數據或連接 Wi-Fi。</string>
     <string name="ok">確定</string>
     <string name="saved_to_downloads">已儲存至下載</string>
     <string name="download_failed_invalid_data">下載失敗：資料無效</string>
@@ -28,5 +28,5 @@
     <string name="customize_feed">顯示或隱藏項目</string>
     <string name="hide_sponsored_ads_from_your_feed">隱藏動態中的廣告</string>
     <string name="enable_download_button_on_media_view">在媒體檢視中啟用下載按鈕</string>
-    <string name="materialbook_settings">Materialbook 設定</string>
+    <string name="materialbook_settings">Astryxbook 設定</string>
 </resources>

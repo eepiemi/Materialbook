@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
 
@@ -18,7 +17,7 @@ extensions.configure<ApplicationExtension> {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.eepiemi.materialbook"
+        applicationId = "com.astryx.book"
         minSdk = 23
         targetSdk = 36
         versionCode = 13
@@ -46,6 +45,7 @@ extensions.configure<ApplicationExtension> {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -73,4 +73,16 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+// AdblockTest drives real browsers against live facebook.com and needs a
+// manually-generated login session (see app/src/test/resources/Readme.md) —
+// it was never meant to run unattended. Excluded from the default `test`
+// task (local and CI alike); run it explicitly with
+// `./gradlew test --tests "com.eepiemi.materialbook.AdblockTest"` once
+// auth.json is set up.
+tasks.withType<Test>().configureEach {
+    filter {
+        excludeTestsMatching("com.eepiemi.materialbook.AdblockTest")
+    }
 }

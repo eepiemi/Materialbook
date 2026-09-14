@@ -19,6 +19,8 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.eepiemi.materialbook", appContext.packageName)
+        // Compare against BuildConfig rather than a hardcoded string, so this doesn't
+        // silently go stale the next time applicationId changes (e.g. rebrand, release vs. debug).
+        assertEquals(BuildConfig.APPLICATION_ID, appContext.packageName)
     }
 }

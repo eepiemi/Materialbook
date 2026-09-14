@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Materialbook</string>
+    <string name="app_name">Astryxbook</string>
     <string name="apply_immediately">Sofort anwenden?</string>
     <string name="remove_ads_title">Werbung entfernen</string>
     <string name="download_content_title">Inhalte herunterladen</string>
@@ -10,7 +10,7 @@
     <string name="amoled_black_title">AMOLED Schwarz</string>
     <string name="customize_feed_title">Feed anpassen</string>
     <string name="network_error_title">Mit Netzwerk verbinden</string>
-    <string name="network_error_description">Um Materialbook zu nutzen, mobile Daten aktivieren oder WLAN verbinden.</string>
+    <string name="network_error_description">Um Astryxbook zu nutzen, mobile Daten aktivieren oder WLAN verbinden.</string>
     <string name="ok">OK</string>
     <string name="saved_to_downloads">In Downloads gespeichert</string>
     <string name="download_failed_invalid_data">Download fehlgeschlagen: Ungültige Daten</string>
@@ -28,5 +28,5 @@
     <string name="customize_feed">Elemente anzeigen oder ausblenden</string>
     <string name="hide_sponsored_ads_from_your_feed">Gesponserte Werbung im Feed ausblenden</string>
     <string name="enable_download_button_on_media_view">Download-Button in Medienansicht aktivieren</string>
-    <string name="materialbook_settings">Materialbook-Einstellungen</string>
+    <string name="materialbook_settings">Astryxbook-Einstellungen</string>
 </resources>

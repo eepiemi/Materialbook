@@ -70,12 +70,12 @@ class SettingsViewModel(
     )
     val materialYou = dataStore.materialYou.stateIn(
         scope = viewModelScope,
-        initialValue = initialPrefs[MATERIAL_YOU] ?: true,
+        initialValue = initialPrefs[MATERIAL_YOU] ?: false,
         started = SharingStarted.WhileSubscribed()
     )
     val amoledBlack = dataStore.amoledBlack.stateIn(
         scope = viewModelScope,
-        initialValue = initialPrefs[AMOLED_BLACK] ?: true,
+        initialValue = initialPrefs[AMOLED_BLACK] ?: false,
         started = SharingStarted.WhileSubscribed()
     )
     val hideSuggested = dataStore.hideSuggested.stateIn(

@@ -1,4 +1,4 @@
-Materialbook is a lightweight Material You client for Facebook. The app is a wrapper around the mobile Facebook website, which is what allows it to be so light!
+Astryxbook is a lightweight client for Facebook that keeps Facebook's own original Android look. The app is a wrapper around the mobile Facebook website, which is what allows it to be so light!
 
 If enabled in the app's settings, the app:
 <ul>

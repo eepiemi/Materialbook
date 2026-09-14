@@ -1,3 +1,18 @@
+## Astryxbook - v1.0.0
+
+<ins>**Changelog:**</ins>
+
+* Feature: Rebrand to Astryxbook — new name, applicationId, and an original "A" monogram launcher icon (not Facebook's trademarked logo, to avoid impersonation/trademark issues).
+* Tweak: Change default settings — 'Material You' theming and 'AMOLED Black' now ship off by default, so the app matches Facebook's own original look out of the box. Both remain available as opt-in toggles for anyone who preferred the previous look.
+* Tweak: Native screens (splash, settings, dialogs) now use Facebook's blue instead of Material You's dynamic/purple fallback colors when Material You is off.
+* Tweak: Tightened native typography to better match Facebook's own, denser type scale.
+* Tweak: Removed the 'Support my work! ☕' button — not relevant to this fork.
+* Fix: Runtime-fetched scripts now come from this fork's own repo instead of upstream Materialbook's.
+* Non-app related: Added a test suite covering the rebrand — defaults, theme colors, app identity/strings, launcher icon, applicationId, and script source.
+* Non-app related: Updated README, issue templates, and the release workflow for the new branding.
+
+---
+
 ## Materialbook - v1.0.0
 
 <ins>**Changelog:**</ins>

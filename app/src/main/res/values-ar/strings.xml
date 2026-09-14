@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Materialbook</string>
+    <string name="app_name">Astryxbook</string>
     <string name="apply_immediately">هل تريد تطبيق التغييرات فوراً؟</string>
     <string name="remove_ads_title">إزالة الإعلانات</string>
     <string name="download_content_title">تنزيل المحتوى</string>
@@ -12,7 +12,7 @@
     <string name="amoled_black_title">وضع أسود نقي</string>
     <string name="customize_feed_title">تخصيص الصفحة الرئيسية</string>
     <string name="network_error_title">يرجى الاتصال بالشبكة</string>
-    <string name="network_error_description">لاستخدام Materialbook، قم بتشغيل بيانات الجوال أو الاتصال بشبكة Wi-Fi.</string>
+    <string name="network_error_description">لاستخدام Astryxbook، قم بتشغيل بيانات الجوال أو الاتصال بشبكة Wi-Fi.</string>
     <string name="ok">موافق</string>
     <string name="saved_to_downloads">تم الحفظ في التنزيلات</string>
     <string name="download_failed_invalid_data">فشل التنزيل: بيانات غير صالحة</string>
@@ -37,7 +37,6 @@
     <string name="hide_sponsored_ads_from_your_feed">إخفاء الإعلانات الممولة من الصفحة الرئيسية</string>
     <string name="enable_download_button_on_media_view">تفعيل زر التنزيل عند عرض الوسائط</string>
     <string name="enable_copy_to_clipboard_button_on_media_view">تفعيل زر النسخ للحافظة عند عرض الوسائط</string>
-    <string name="materialbook_settings">إعدادات Materialbook</string>
-    <string name="support_my_work">ادعمني! ☕</string>
+    <string name="materialbook_settings">إعدادات Astryxbook</string>
     <string name="not_supported">غير مدعوم</string>
 </resources>
