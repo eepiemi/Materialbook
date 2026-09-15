@@ -31,6 +31,45 @@
         return;
     }
 
+    //  The Ad tag and separator + special icon elements have a unique color of #8a8d91 in both theme modes (we'll see if they fix this with time)
+
+    const processedAds = new WeakSet();
+
+    function removeFeedAds() {
+        const spans = document.querySelectorAll('span.f5[style*="color:#8a8d91"]:not([data-nosnippet])');
+
+        spans?.forEach(span => {
+            if (processedAds.has(span)) return;
+            processedAds.add(span);
+        })
+
+        for (const span of spans) {
+            const parent = span.parentElement;
+
+            if (!parent?.matches('div.native-text.rslh')) {
+                continue;
+            }
+
+            const container = parent.closest('div[data-dcm-id="1"][data-mcomponent="MContainer"]');
+            container.style.display = 'none'
+
+            const postSeparator = container.previousElementSibling;
+
+            if (postSeparator && postSeparator.offsetHeight === 1 && postSeparator.querySelector('[data-fd-action]') ) {
+              postSeparator.style.display = 'none';
+            }
+        }
+    }
+
+    const adsObserver = new MutationObserver(() => {
+        removeFeedAds();
+    }).observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    removeFeedAds();
+
     const sponsoredTexts = [
         "Sponsored", "Ad", "Gesponsert", "Sponsorlu", "Sponsorowane",
         "Ispoonsara godhameera", "Geborg", "Bersponsor", "Ditaja",
@@ -50,47 +89,6 @@
         "贊助", "赞助内容", "広告", "സ്‌പോൺസർ ചെയ്‌തത്",
         "Anzeige","Peye","Oglas"
     ];
-
-    const specialChar = '󰞋';
-
-    const sponsoredRegex = new RegExp(`(${sponsoredTexts.join('|')})\\s*${specialChar}`, 'i');
-
-    function hideSponsoredContent(config) {
-        const { selector, textSelector } = config;
-        const containers = document.querySelectorAll(selector);
-
-        containers.forEach(container => {
-            const spans = container.querySelectorAll(textSelector);
-            for (const span of spans) {
-                if (sponsoredRegex.test(span.textContent)) {
-                    container.style.display = 'none';
-                    break;
-                }
-            }
-        });
-    }
-
-    const configs = [
-        {
-            selector: 'div[data-type="vscroller"] div[data-tracking-duration-id]:has(> div[data-focusable="true"] div[data-mcomponent*="TextArea"] .native-text > span)',
-            textSelector: '.native-text > span'
-        },
-        {
-            selector: 'div[data-status-bar-color] > div[data-mcomponent="MContainer"] > div[data-mcomponent="MContainer"]',
-            textSelector: 'div[data-mcomponent="TextArea"] .native-text > span'
-        },
-        {
-            selector: 'div[data-mcomponent="MContainer"].m.bg-s3 div[data-mcomponent="MContainer"]',
-            textSelector: 'div[data-mcomponent="TextArea"] .native-text > span'
-        },
-    ];
-
-    function hideAllAds() { configs.forEach(hideSponsoredContent); }
-
-    hideAllAds();
-
-    const observer = new MutationObserver(hideAllAds);
-    observer.observe(document.body, { childList: true, subtree: true });
 
     function containsSponsoredText(text) {
         const lowerText = text.toLowerCase();
