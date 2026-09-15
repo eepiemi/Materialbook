@@ -1,0 +1,103 @@
+name: CI
+
+# Build/test validation, reusable by create-release.yml (workflow_call) so the
+# actual release pipeline runs the exact same checks instead of duplicating
+# them. Runs on every PR too — this is what makes PR checks show "CI / ..."
+# instead of the misleading "Create Release / ..." they showed before the split.
+#
+# Deliberately has no access to signing secrets: only create-release.yml's
+# own job (not this reusable workflow) handles the keystore, so a PR run
+# never touches release-signing credentials.
+
+on:
+  pull_request:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Run Unit Tests and Build APK
+        run: |
+          chmod +x gradlew
+          ./gradlew test assembleRelease --stacktrace
+          ls -R app/build/outputs/apk || echo "No APK directory found"
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: apk-artifact
+          path: app/build/outputs/apk/release/app-release.apk
+          compression-level: 5
+
+  instrumented-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+
+      # GitHub-hosted Ubuntu runners support nested virtualization but need
+      # KVM permissions opened up explicitly for the emulator to use it.
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      # Caches the AVD image + boot snapshot, not just SDK downloads — a cache
+      # hit skips both re-downloading build-tools/platform/emulator/system-image
+      # AND the cold boot itself (restores from snapshot instead). Key is static
+      # (not hashed on source) since the AVD content only depends on the
+      # api-level/target/arch/profile choice below, not on this repo's code.
+      - name: AVD cache
+        uses: actions/cache@v5
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-34-google_apis-x86_64-pixel_6
+
+      - name: Create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          disable-animations: false
+          script: echo "Generated AVD snapshot for caching."
+
+      - name: Run Instrumented Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          disable-animations: true
+          script: |
+            chmod +x gradlew
+            ./gradlew connectedAndroidTest --stacktrace
