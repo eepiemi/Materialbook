@@ -1,10 +1,14 @@
 name: Create Release
 
+# Runs the same checks as CI (via workflow_call — never duplicated) before
+# signing and publishing. Deliberately does NOT trigger on pull_request —
+# that's ci.yml's job now; keeping this file tag/dispatch-only means PR
+# checks are correctly labeled "CI / ..." instead of "Create Release / ...".
+
 on:
   push:
     tags:
       - 'v*.*.*'
-  pull_request:
   workflow_dispatch:
     inputs:
       release_tag:
@@ -13,141 +17,24 @@ on:
         type: string
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v7
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v6
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-          cache: 'gradle'
-
-      - name: Run Unit Tests and Build APK
-        run: |
-          chmod +x gradlew
-          ./gradlew test assembleRelease --stacktrace
-          ls -R app/build/outputs/apk || echo "No APK directory found"
-
-      - name: Set up Keystore
-        run: |
-          mkdir -p $RUNNER_TEMP/keystores
-          echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > $RUNNER_TEMP/keystores/keystore.jks
-          if [ ! -f $RUNNER_TEMP/keystores/keystore.jks ]; then
-            echo "Failed to decode keystore file"
-            exit 1
-          fi
-
-      - name: Sign APK
-        run: |
-          BUILD_TOOLS_DIR=$(ls -d $ANDROID_HOME/build-tools/*/ | sort -V | tail -n 1)
-          if [ -z "$BUILD_TOOLS_DIR" ]; then
-            echo "No build-tools found in $ANDROID_HOME/build-tools"
-            exit 1
-          fi
-          APKSIGNER="${BUILD_TOOLS_DIR}apksigner"
-          if [ ! -f "$APKSIGNER" ]; then
-            echo "apksigner not found at $APKSIGNER"
-            exit 1
-          fi
-          if [ ! -f app/build/outputs/apk/release/app-release.apk ]; then
-            echo "APK not found at app/build/outputs/apk/release/app-release.apk"
-            exit 1
-          fi
-          $APKSIGNER sign \
-            --ks $RUNNER_TEMP/keystores/keystore.jks \
-            --ks-key-alias ${{ secrets.KEY_ALIAS }} \
-            --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
-            --key-pass pass:${{ secrets.KEY_PASSWORD }} \
-            --out app-release.apk \
-            app/build/outputs/apk/release/app-release.apk
-
-      - name: Clean Up Keystore
-        if: always()
-        run: |
-          rm -f $RUNNER_TEMP/keystores/keystore.jks
-
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: apk-artifact
-          path: app-release.apk
-          compression-level: 5
-
-  instrumented-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v7
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v6
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-          cache: 'gradle'
-
-      # GitHub-hosted Ubuntu runners support nested virtualization but need
-      # KVM permissions opened up explicitly for the emulator to use it.
-      - name: Enable KVM group perms
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
-
-      # Caches the AVD image + boot snapshot, not just SDK downloads — a cache
-      # hit skips both re-downloading build-tools/platform/emulator/system-image
-      # AND the cold boot itself (restores from snapshot instead). Key is static
-      # (not hashed on source) since the AVD content only depends on the
-      # api-level/target/arch/profile choice below, not on this repo's code.
-      - name: AVD cache
-        uses: actions/cache@v5
-        id: avd-cache
-        with:
-          path: |
-            ~/.android/avd/*
-            ~/.android/adb*
-          key: avd-34-google_apis-x86_64-pixel_6
-
-      - name: Create AVD and generate snapshot for caching
-        if: steps.avd-cache.outputs.cache-hit != 'true'
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 34
-          target: google_apis
-          arch: x86_64
-          profile: pixel_6
-          force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
-          disable-animations: false
-          script: echo "Generated AVD snapshot for caching."
-
-      - name: Run Instrumented Tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 34
-          target: google_apis
-          arch: x86_64
-          profile: pixel_6
-          force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
-          disable-animations: true
-          script: |
-            chmod +x gradlew
-            ./gradlew connectedAndroidTest --stacktrace
+  ci:
+    uses: ./.github/workflows/ci.yml
 
   release:
-    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
-    needs: [build, instrumented-tests]
+    needs: ci
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v7
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
 
       - name: Create Tag for Manual Trigger
         if: github.event_name == 'workflow_dispatch'
@@ -160,14 +47,48 @@ jobs:
         with:
           name: apk-artifact
 
-      - name: Rename APK for Release
+      - name: Set up Keystore
         run: |
-          TAG_NAME="${{ github.event.inputs.release_tag || github.ref_name }}"
-          mv app-release.apk "Astryxbook_${TAG_NAME}.apk"
-          if [ ! -f "Astryxbook_${TAG_NAME}.apk" ]; then
-            echo "Failed to rename APK"
+          mkdir -p $RUNNER_TEMP/keystores
+          echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > $RUNNER_TEMP/keystores/keystore.jks
+          if [ ! -f $RUNNER_TEMP/keystores/keystore.jks ]; then
+            echo "Failed to decode keystore file"
             exit 1
           fi
+
+      - name: Sign and Rename APK
+        run: |
+          TAG_NAME="${{ github.event.inputs.release_tag || github.ref_name }}"
+          BUILD_TOOLS_DIR=$(ls -d $ANDROID_HOME/build-tools/*/ | sort -V | tail -n 1)
+          if [ -z "$BUILD_TOOLS_DIR" ]; then
+            echo "No build-tools found in $ANDROID_HOME/build-tools"
+            exit 1
+          fi
+          APKSIGNER="${BUILD_TOOLS_DIR}apksigner"
+          if [ ! -f "$APKSIGNER" ]; then
+            echo "apksigner not found at $APKSIGNER"
+            exit 1
+          fi
+          if [ ! -f app-release.apk ]; then
+            echo "APK not found at app-release.apk"
+            exit 1
+          fi
+          $APKSIGNER sign \
+            --ks $RUNNER_TEMP/keystores/keystore.jks \
+            --ks-key-alias ${{ secrets.KEY_ALIAS }} \
+            --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
+            --key-pass pass:${{ secrets.KEY_PASSWORD }} \
+            --out "Astryxbook_${TAG_NAME}.apk" \
+            app-release.apk
+          if [ ! -f "Astryxbook_${TAG_NAME}.apk" ]; then
+            echo "Failed to produce signed release APK"
+            exit 1
+          fi
+
+      - name: Clean Up Keystore
+        if: always()
+        run: |
+          rm -f $RUNNER_TEMP/keystores/keystore.jks
 
       - name: Prepare Changelog
         run: |
