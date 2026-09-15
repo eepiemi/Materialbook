@@ -2,11 +2,22 @@ name: Create Release
 
 # Runs the same checks as CI (via workflow_call — never duplicated) before
 # signing and publishing. Deliberately does NOT trigger on pull_request —
-# that's ci.yml's job now; keeping this file tag/dispatch-only means PR
-# checks are correctly labeled "CI / ..." instead of "Create Release / ...".
+# that's ci.yml's job now; keeping this file tag/dispatch/main-push-only
+# means PR checks are correctly labeled "CI / ..." instead of
+# "Create Release / ...".
+#
+# Three ways this runs:
+#  1. push to main (normal path) — compute-version auto-bumps the version
+#     from the conventional-commit prefix (feat/fix/chore/etc.) of the
+#     merge commit and pushes the new tag itself.
+#  2. push of a v*.*.* tag directly — manual escape hatch, bypasses
+#     auto-versioning (e.g. re-releasing an old commit).
+#  3. workflow_dispatch — manual override with an explicit tag.
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*.*.*'
   workflow_dispatch:
@@ -17,11 +28,40 @@ on:
         type: string
 
 jobs:
+  compute-version:
+    # Only the main-push path auto-computes a version — a direct tag push or
+    # workflow_dispatch already carries an explicit one.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      new_tag: ${{ steps.tag.outputs.new_tag }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      # Reads conventional-commit prefixes since the last tag: feat -> minor,
+      # fix/chore/docs/ci/etc -> patch (default_bump), BREAKING CHANGE or a
+      # "!" after the type -> major. Uses the default GITHUB_TOKEN
+      # deliberately — that means this tag push will NOT re-trigger this
+      # same workflow's own `push: tags` listener, avoiding a duplicate run;
+      # we already continue in this same run via the outputs below instead.
+      - name: Bump version and push tag
+        id: tag
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: patch
+          release_branches: main
+
   ci:
     uses: ./.github/workflows/ci.yml
 
   release:
-    needs: ci
+    needs: [ci, compute-version]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -42,6 +82,16 @@ jobs:
           git tag ${{ github.event.inputs.release_tag }}
           git push origin ${{ github.event.inputs.release_tag }}
 
+      # Unifies the tag name across all three trigger paths (auto-computed,
+      # manually tagged, or workflow_dispatch input) into one place, and
+      # derives the bare version number (no "v" prefix) for the APK filename.
+      - name: Determine release tag
+        id: vars
+        run: |
+          TAG_NAME="${{ needs.compute-version.outputs.new_tag || github.event.inputs.release_tag || github.ref_name }}"
+          echo "tag=$TAG_NAME" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG_NAME#v}" >> "$GITHUB_OUTPUT"
+
       - name: Download APK Artifact
         uses: actions/download-artifact@v7
         with:
@@ -58,7 +108,6 @@ jobs:
 
       - name: Sign and Rename APK
         run: |
-          TAG_NAME="${{ github.event.inputs.release_tag || github.ref_name }}"
           BUILD_TOOLS_DIR=$(ls -d $ANDROID_HOME/build-tools/*/ | sort -V | tail -n 1)
           if [ -z "$BUILD_TOOLS_DIR" ]; then
             echo "No build-tools found in $ANDROID_HOME/build-tools"
@@ -78,9 +127,9 @@ jobs:
             --ks-key-alias ${{ secrets.KEY_ALIAS }} \
             --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
             --key-pass pass:${{ secrets.KEY_PASSWORD }} \
-            --out "Astryxbook_${TAG_NAME}.apk" \
+            --out "Astryxbook-${{ steps.vars.outputs.version }}.apk" \
             app-release.apk
-          if [ ! -f "Astryxbook_${TAG_NAME}.apk" ]; then
+          if [ ! -f "Astryxbook-${{ steps.vars.outputs.version }}.apk" ]; then
             echo "Failed to produce signed release APK"
             exit 1
           fi
@@ -94,7 +143,7 @@ jobs:
         run: |
           if [ ! -f CHANGE.md ]; then
             echo "CHANGE.md not found, using default changelog"
-            echo "Release ${{ github.ref_name || github.event.inputs.release_tag }}" > CHANGE.txt
+            echo "Release ${{ steps.vars.outputs.tag }}" > CHANGE.txt
           else
             cp CHANGE.md CHANGE.txt
           fi
@@ -102,6 +151,6 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.release_tag || github.ref_name }}
-          files: Astryxbook_${{ github.event.inputs.release_tag || github.ref_name }}.apk
+          tag_name: ${{ steps.vars.outputs.tag }}
+          files: Astryxbook-${{ steps.vars.outputs.version }}.apk
           body_path: CHANGE.txt
