@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">Materialbook</string>
+
+    <!-- Bottom Text and Buttons -->
+    <string name="apply_immediately">Applica Immediatamente?</string>
+    <string name="remove_ads_title">Rimuovi pubblicità</string>
+    <string name="download_content_title">Scarica contenuti</string>
+    <string name="copy_to_clipboard_title">Copia negli appunti</string>
+    <string name="desktop_layout_title">Layout desktop</string>
+    <string name="immersive_mode_title">Modalità immersiva</string>
+    <string name="sticky_navbar_title">Barra di navigazione fissa</string>
+    <string name="pinch_to_zoom_title">Pizzica per ingrandire</string>
+    <string name="material_you_title">Material You</string>
+    <string name="amoled_black_title">AMOLED Black</string>
+    <string name="customize_feed_title">Personalizza il feed</string>
+    <string name="network_error_title">Connettiti a una rete</string>
+    <string name="network_error_description">Per utilizzare Materialbook, attiva i dati mobili o connettiti al Wi-Fi.</string>
+    <string name="ok">OK</string>
+    <string name="saved_to_downloads">Salvato nei Download</string>
+    <string name="download_failed_invalid_data">Download fallito: dati non validi</string>
+    <string name="failed_to_save_file">Impossibile salvare il file</string>
+    <string name="image_copied_to_clipboard">Immagine copiata negli appunti</string>
+    <string name="copy_failed_invalid_data">Copia fallita: dati non validi</string>
+    <string name="copy_failed_invalid_image">Copia fallita: immagine non valida</string>
+    <string name="failed_to_copy_image">Impossibile copiare l\'immagine</string>
+    <string name="clipboard_not_supported">Gli appunti non sono supportati in questa versione</string>
+    <string name="suggested_posts">Post consigliati</string>
+    <string name="reels">Reel</string>
+    <string name="stories">Storie</string>
+    <string name="people_you_may_know">Persone che potresti conoscere</string>
+    <string name="groups">Gruppi</string>
+    <string name="enable_material_you_theming_for_facebook">Abilita il tema Material You per Facebook</string>
+    <string name="enable_pure_black_theme_for_amoled_displays">Abilita il tema nero puro. Richiede la \'Modalità scura\' per funzionare</string>
+    <string name="keep_the_navigation_bar_visible_while_scrolling">Mantieni visibile la barra di navigazione durante lo scorrimento</string>
+    <string name="hide_system_bars_for_a_fullscreen_experience">Nascondi le barre di sistema per un\'esperienza a schermo intero</string>
+    <string name="force_desktop_layout_may_not_be_suitable_for_smaller_display">Forza il layout desktop. Non adatto a schermi piccoli.</string>
+    <string name="use_two_fingers_to_zoom_in_or_out">Usa due dita per ingrandire o rimpicciolire</string>
+    <string name="customize_feed">Mostra o nascondi elementi</string>
+    <string name="hide_sponsored_ads_from_your_feed">Nascondi gli annunci sponsorizzati dal feed</string>
+    <string name="enable_download_button_on_media_view">Abilita il pulsante di download nella vista contenuti multimediali</string>
+    <string name="enable_copy_to_clipboard_button_on_media_view">Abilita il pulsante \'Copia negli appunti\' nella vista contenuti multimediali</string>
+    <string name="materialbook_settings">Impostazioni Materialbook</string>
+    <string name="support_my_work">Supporta il mio lavoro! ☕</string>
+    <string name="not_supported">Non supportato</string>
+</resources>
