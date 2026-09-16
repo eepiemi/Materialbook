@@ -2,8 +2,6 @@ Astryxbook is a lightweight client for Facebook that keeps Facebook's own origin
 
 If enabled in the app's settings, the app:
 <ul>
-    <li>Uses Material You colors instead of Facebook's blues</li>
-    <li>Makes Facebook AMOLED Black</li>
     <li>Blocks sponsored ads</li>
     <li>Hides distractions like:</li>
         <ul>
@@ -17,5 +15,7 @@ If enabled in the app's settings, the app:
     <li>Keeps the navigation bar at the top</li>
     <li>Allows pinch-to-zoom anywhere</li>
     <li>Downloads media or copies it to the clipboard</li>
-    <li>Lets the user access Messenger (Desktop layout only)
+    <li>Lets the user access Messenger (Desktop layout only)</li>
+    <li>Uses Material You colors instead of Facebook's blues</li>
+    <li>Makes Facebook AMOLED Black</li>
 </ul>
