@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Astryxbook's own branding strings, kept separate from strings.xml on purpose.
+  strings.xml is upstream Materialbook's actively-maintained translation file;
+  every branded string we put on the same lines there was a recurring merge-
+  conflict magnet on every upstream sync. Android merges all files in a
+  values*/ directory together automatically, so this works with zero build
+  config changes — just don't redefine these 3 keys in strings.xml again.
+-->
+<resources>
+    <string name="app_name">Astryxbook</string>
+    <string name="network_error_description">To use Astryxbook, turn on mobile data or connect to Wi-Fi.</string>
+    <string name="materialbook_settings">Astryxbook settings</string>
+</resources>

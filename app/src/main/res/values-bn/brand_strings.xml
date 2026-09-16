@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Astryxbook</string>
+    <string name="network_error_description">Astryxbook \u09ac\u09cd\u09af\u09ac\u09b9\u09be\u09b0 \u0995\u09b0\u09a4\u09c7, \u09ae\u09cb\u09ac\u09be\u0987\u09b2 \u09a1\u09c7\u099f\u09be \u099a\u09be\u09b2\u09c1 \u0995\u09b0\u09c1\u09a8 \u09ac\u09be Wi-Fi \u098f \u09b8\u0982\u09af\u09c1\u0995\u09cd\u09a4 \u09b9\u09cb\u09a8\u0964</string>
+    <string name="materialbook_settings">Astryxbook \u09b8\u09c7\u099f\u09bf\u0982\u09b8</string>
+</resources>

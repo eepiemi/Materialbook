@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Astryxbook</string>
     <string name="apply_immediately">Appliquer maintenant?</string>
     <string name="remove_ads_title">Supprimer les publicités</string>
     <string name="download_content_title">Télécharger le contenu</string>
@@ -10,7 +9,6 @@
     <string name="amoled_black_title">Noir AMOLED</string>
     <string name="customize_feed_title">Personnaliser le flux</string>
     <string name="network_error_title">Se connecter au réseau</string>
-    <string name="network_error_description">Pour utiliser Astryxbook, activez les données mobiles ou connectez-vous au Wi-Fi.</string>
     <string name="ok">OK</string>
     <string name="saved_to_downloads">Enregistré dans Téléchargements</string>
     <string name="download_failed_invalid_data">Échec du téléchargement : données invalides</string>
@@ -28,5 +26,4 @@
     <string name="customize_feed">Afficher ou masquer les éléments</string>
     <string name="hide_sponsored_ads_from_your_feed">Masquer les publicités sponsorisées dans le flux</string>
     <string name="enable_download_button_on_media_view">Activer le bouton de téléchargement sur la vue média</string>
-    <string name="materialbook_settings">Paramètres Astryxbook</string>
 </resources>
