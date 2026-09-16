@@ -146,11 +146,13 @@ jobs:
             echo "Release ${{ steps.vars.outputs.tag }}" > CHANGE.txt
           else
             cp CHANGE.md CHANGE.txt
+            sed -i "1s/^## Astryxbook - v.*/## Astryxbook - ${{ steps.vars.outputs.tag }}/" CHANGE.txt
           fi
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.vars.outputs.tag }}
+          name: Astryxbook ${{ steps.vars.outputs.tag }}
           files: Astryxbook-${{ steps.vars.outputs.version }}.apk
           body_path: CHANGE.txt
