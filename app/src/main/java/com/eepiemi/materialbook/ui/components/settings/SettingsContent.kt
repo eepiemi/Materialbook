@@ -23,6 +23,7 @@ import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.PanoramaWideAngle
+import androidx.compose.material.icons.outlined.PictureInPictureAlt
 import androidx.compose.material.icons.outlined.Pinch
 import androidx.compose.material.icons.outlined.Shield
 import androidx.compose.material3.Icon
@@ -63,6 +64,7 @@ fun SettingsContent(
     val pinchToZoom = viewModel.pinchToZoom.collectAsState()
     val materialYou = viewModel.materialYou.collectAsState()
     val amoledBlack = viewModel.amoledBlack.collectAsState()
+    val pipEnabled = viewModel.pipEnabled.collectAsState()
 
     val isAutoDesktop = rememberAutoDesktop()
 
@@ -146,6 +148,13 @@ fun SettingsContent(
                     supportingText = stringResource(R.string.enable_pure_black_theme_for_amoled_displays),
                     isActive = amoledBlack.value,
                     onClick = { viewModel.setAmoledBlack(!amoledBlack.value) }
+                ),
+                SettingsItem(
+                    icon = Icons.Outlined.PictureInPictureAlt,
+                    title = stringResource(R.string.pip_title),
+                    supportingText = stringResource(R.string.shrink_into_a_floating_window_when_leaving_while_a_video_plays),
+                    isActive = pipEnabled.value,
+                    onClick = { viewModel.setPipEnabled(!pipEnabled.value) }
                 )
             )
         )

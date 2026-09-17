@@ -48,6 +48,7 @@ import com.eepiemi.materialbook.utils.jsBridge.DownloadBridge
 import com.eepiemi.materialbook.utils.jsBridge.MaterialbookSettings
 import com.eepiemi.materialbook.utils.jsBridge.ThemeChange
 import com.eepiemi.materialbook.utils.jsBridge.MaterialYouBridge
+import com.eepiemi.materialbook.utils.jsBridge.PipBridge
 import com.eepiemi.materialbook.utils.rememberAutoDesktop
 import com.eepiemi.materialbook.utils.rememberImeHeight
 import kotlinx.coroutines.delay
@@ -55,7 +56,8 @@ import kotlinx.coroutines.delay
 @Composable
 fun MaterialbookWebView(
     url: String,
-    settingsVM: SettingsViewModel = viewModel()
+    settingsVM: SettingsViewModel = viewModel(),
+    onVideoPlayingChanged: (Boolean) -> Unit = {}
 ) {
     val context = LocalContext.current
     val activity = LocalActivity.current
@@ -293,6 +295,10 @@ fun MaterialbookWebView(
                 addJavascriptInterface(
                     MaterialYouBridge(primaryColor, onPrimaryColor),
                     "MaterialYouBridge"
+                )
+                addJavascriptInterface(
+                    PipBridge(onVideoPlayingChanged),
+                    "PipBridge"
                 )
 
                 setLayerType(View.LAYER_TYPE_HARDWARE, null)

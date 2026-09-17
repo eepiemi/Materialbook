@@ -49,4 +49,17 @@ class SettingsDefaultsTest {
             viewModel.amoledBlack.value
         )
     }
+
+    @Test
+    fun pipEnabledIsOffByDefault() {
+        // Entering a floating window unexpectedly (e.g. the first time a new
+        // user backgrounds the app while a video happens to be playing) is
+        // surprising behavior; must be opt-in, same reasoning as the two above.
+        val app = ApplicationProvider.getApplicationContext<Application>()
+        val viewModel = SettingsViewModel(app)
+        assertFalse(
+            "pipEnabled should default to false",
+            viewModel.pipEnabled.value
+        )
+    }
 }

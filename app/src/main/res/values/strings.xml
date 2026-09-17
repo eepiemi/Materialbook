@@ -11,6 +11,7 @@
     <string name="pinch_to_zoom_title">Pinch to zoom</string>
     <string name="material_you_title">Material You</string>
     <string name="amoled_black_title">AMOLED Black</string>
+    <string name="pip_title">Picture-in-Picture</string>
     <string name="customize_feed_title">Customize feed</string>
     <string name="network_error_title">Connect to a network</string>
     <string name="ok">OK</string>
@@ -37,5 +38,6 @@
     <string name="hide_sponsored_ads_from_your_feed">Hide sponsored ads from feed</string>
     <string name="enable_download_button_on_media_view">Enable download button on media view</string>
     <string name="enable_copy_to_clipboard_button_on_media_view">Enable copy to clipboard button on media view</string>
+    <string name="shrink_into_a_floating_window_when_leaving_while_a_video_plays">Shrink into a floating window when leaving the app while a video is playing</string>
     <string name="not_supported">Not supported</string>
 </resources>
