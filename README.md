@@ -8,7 +8,7 @@
 
 <p align="middle">
     <a href='https://github.com/eepiemi/Materialbook/releases/latest'><img alt='Download' height='40' src='./assets/download.svg'/></a>
-    <a href='https://grev.shehryar.ae/?owner=eepiemi&repo=Materialbook'><img alt='Downloads count' height='40' src='https://downloads-count.eepiemi.workers.dev'/></a>
+    <a href='https://grev.shehryar.ae/?owner=eepiemi&repo=Materialbook'><img alt='Downloads count' height='40' src='https://downloads-count-materialbook.eepiemi.workers.dev'/></a>
 </p>
 
 <h2 align="middle">
