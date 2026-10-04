@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Materialbook</string>
     <string name="apply_immediately">立即應用？</string>
@@ -29,4 +30,8 @@
     <string name="hide_sponsored_ads_from_your_feed">隱藏動態中的廣告</string>
     <string name="enable_download_button_on_media_view">在媒體檢視中啟用下載按鈕</string>
     <string name="materialbook_settings">Materialbook 設定</string>
+    <string name="copy_to_clipboard_title">複製到剪貼簿</string>
+    <string name="material_you_title">Material You</string>
+    <string name="image_copied_to_clipboard">圖片已複製到剪貼簿</string>
+    <string name="copy_failed_invalid_data">複製失敗：資料無效</string>
 </resources>
