@@ -19,6 +19,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -42,6 +43,8 @@ import com.eepiemi.materialbook.ui.viewmodel.MainViewModel
 import com.eepiemi.materialbook.ui.viewmodel.SettingsViewModel
 import com.eepiemi.materialbook.utils.DESKTOP_USER_AGENT
 import com.eepiemi.materialbook.utils.ExternalRequestInterceptor
+import com.eepiemi.materialbook.utils.MESSAGES_DESKTOP_URL
+import com.eepiemi.materialbook.utils.isLeavingMessages
 import com.eepiemi.materialbook.utils.fileChooserWebViewParams
 import com.eepiemi.materialbook.utils.jsBridge.ClipboardBridge
 import com.eepiemi.materialbook.utils.jsBridge.DownloadBridge
@@ -62,8 +65,22 @@ fun MaterialbookWebView(
     val resources = LocalResources.current
 
     val state = rememberSaveableWebViewState(url)
+    // Desktop-mode override that applies only while the Messages section is open.
+    val messagesDesktopSetting by settingsVM.messagesDesktop.collectAsState()
+    val currentMessagesDesktopSetting by rememberUpdatedState(messagesDesktopSetting)
+    var messagesDesktop by remember { mutableStateOf(false) }
     val navigator = rememberWebViewNavigator(
-        requestInterceptor = ExternalRequestInterceptor { externalUrl ->
+        requestInterceptor = ExternalRequestInterceptor(
+            tryOpenMessagesDesktop = {
+                if (currentMessagesDesktopSetting) {
+                    messagesDesktop = true
+                    true
+                } else {
+                    false
+                }
+            },
+            isMessagesDesktopActive = { messagesDesktop },
+            handleExternalUrl = { externalUrl ->
             val intent = Intent(Intent.ACTION_VIEW, externalUrl.toUri())
             runCatching {
                 context.startActivity(intent)
@@ -75,6 +92,7 @@ fun MaterialbookWebView(
                 ).show()
             }
         }
+        )
     )
 
     LaunchedEffect(navigator) {
@@ -225,8 +243,28 @@ fun MaterialbookWebView(
     }
 
 
-    LaunchedEffect(isDesktop) {
-        val userAgent = if (isDesktop) DESKTOP_USER_AGENT else ""
+    // Messages tapped: switch to the desktop UA first, then load the desktop page.
+    LaunchedEffect(messagesDesktop) {
+        if (messagesDesktop) {
+            state.nativeWebView.settings.userAgentString = DESKTOP_USER_AGENT
+            navigator.loadUrl(MESSAGES_DESKTOP_URL)
+        }
+    }
+
+    // Left the Messages section: back to the normal user agent and reload there.
+    val lastLoadedUrl = state.lastLoadedUrl
+    LaunchedEffect(lastLoadedUrl) {
+        val u = lastLoadedUrl ?: return@LaunchedEffect
+        if (messagesDesktop && isLeavingMessages(u)) {
+            messagesDesktop = false
+            state.nativeWebView.settings.userAgentString =
+                if (isDesktop) DESKTOP_USER_AGENT else ""
+            navigator.loadUrl(u)
+        }
+    }
+
+    LaunchedEffect(isDesktop, messagesDesktop) {
+        val userAgent = if (isDesktop || messagesDesktop) DESKTOP_USER_AGENT else ""
         state.nativeWebView.settings.userAgentString = userAgent
     }
 
