@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Message
 import androidx.compose.material.icons.filled.BurstMode
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Diversity1
@@ -21,7 +22,6 @@ import androidx.compose.material.icons.filled.Try
 import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.DesktopWindows
-import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Palette
@@ -88,7 +88,7 @@ fun SettingsContent(
                     onClick = { viewModel.setRemoveAds(!removeAds.value) },
                 ),
                 SettingsItem(
-                    icon = Icons.Outlined.Message,
+                    icon = Icons.AutoMirrored.Outlined.Message,
                     title = stringResource(R.string.messages_desktop_title),
                     supportingText = stringResource(R.string.messages_desktop_desc),
                     isActive = messagesDesktop.value,

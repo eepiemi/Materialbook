@@ -20,11 +20,10 @@ class ExternalRequestInterceptor(
         // enabled; the caller switches the user agent and loads the desktop page.
         if (request.isForMainFrame && isMessagesLink(request.url)) {
             if (isMessagesDesktopActive()) {
-                return if (request.url.startsWith("http", ignoreCase = true)) {
-                    WebRequestInterceptResult.Allow
-                } else {
-                    WebRequestInterceptResult.Reject
-                }
+                // Already on the desktop Messages page: let it navigate. Anything else that
+                // points at Messages (m.me, messenger.com, deep links) is re-mapped below.
+                if (!request.url.startsWith("http", ignoreCase = true)) return WebRequestInterceptResult.Reject
+                if (isDesktopMessagesUrl(request.url)) return WebRequestInterceptResult.Allow
             }
             if (tryOpenMessagesDesktop(request.url)) return WebRequestInterceptResult.Reject
         }

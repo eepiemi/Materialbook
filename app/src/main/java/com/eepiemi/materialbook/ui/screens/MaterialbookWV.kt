@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -43,14 +44,15 @@ import com.eepiemi.materialbook.ui.viewmodel.MainViewModel
 import com.eepiemi.materialbook.ui.viewmodel.SettingsViewModel
 import com.eepiemi.materialbook.utils.DESKTOP_USER_AGENT
 import com.eepiemi.materialbook.utils.ExternalRequestInterceptor
-import com.eepiemi.materialbook.utils.MESSAGES_DESKTOP_URL
-import com.eepiemi.materialbook.utils.isLeavingMessages
 import com.eepiemi.materialbook.utils.fileChooserWebViewParams
+import com.eepiemi.materialbook.utils.isLeavingMessages
 import com.eepiemi.materialbook.utils.jsBridge.ClipboardBridge
 import com.eepiemi.materialbook.utils.jsBridge.DownloadBridge
 import com.eepiemi.materialbook.utils.jsBridge.MaterialbookSettings
 import com.eepiemi.materialbook.utils.jsBridge.ThemeChange
 import com.eepiemi.materialbook.utils.jsBridge.MaterialYouBridge
+import com.eepiemi.materialbook.utils.jsBridge.MessagesBridge
+import com.eepiemi.materialbook.utils.messagesDesktopUrl
 import com.eepiemi.materialbook.utils.rememberAutoDesktop
 import com.eepiemi.materialbook.utils.rememberImeHeight
 import kotlinx.coroutines.delay
@@ -68,12 +70,19 @@ fun MaterialbookWebView(
     // Desktop-mode override that applies only while the Messages section is open.
     val messagesDesktopSetting by settingsVM.messagesDesktop.collectAsState()
     val currentMessagesDesktopSetting by rememberUpdatedState(messagesDesktopSetting)
-    var messagesDesktop by remember { mutableStateOf(false) }
+    // Survives Activity recreation so the user agent matches the restored page.
+    var messagesDesktop by rememberSaveable { mutableStateOf(false) }
+    // Page to open for a fresh Messages request (null once handled; not saved, so a restored
+    // page is never reloaded just because the Activity was recreated).
+    var messagesTarget by remember { mutableStateOf<String?>(null) }
+    // Bumped from the JS bridge when the desktop site navigates out of Messages in-page.
+    var leftMessagesSignal by remember { mutableIntStateOf(0) }
     val navigator = rememberWebViewNavigator(
         requestInterceptor = ExternalRequestInterceptor(
-            tryOpenMessagesDesktop = {
+            tryOpenMessagesDesktop = { messagesUrl ->
                 if (currentMessagesDesktopSetting) {
                     messagesDesktop = true
+                    messagesTarget = messagesDesktopUrl(messagesUrl)
                     true
                 } else {
                     false
@@ -243,24 +252,31 @@ fun MaterialbookWebView(
     }
 
 
-    // Messages tapped: switch to the desktop UA first, then load the desktop page.
-    LaunchedEffect(messagesDesktop) {
-        if (messagesDesktop) {
-            state.nativeWebView.settings.userAgentString = DESKTOP_USER_AGENT
-            navigator.loadUrl(MESSAGES_DESKTOP_URL)
-        }
+    // Messages requested: switch to the desktop UA first, then open that conversation/inbox.
+    LaunchedEffect(messagesTarget) {
+        val target = messagesTarget ?: return@LaunchedEffect
+        messagesTarget = null
+        state.nativeWebView.settings.userAgentString = DESKTOP_USER_AGENT
+        navigator.loadUrl(target)
     }
 
-    // Left the Messages section: back to the normal user agent and reload there.
+    // Left the Messages section: back to the normal user agent. The page is already on the
+    // destination URL, so reload it (loadUrl would push a duplicate history entry).
+    val leaveMessages = {
+        messagesDesktop = false
+        state.nativeWebView.settings.userAgentString =
+            if (isDesktop) DESKTOP_USER_AGENT else ""
+        navigator.reload()
+    }
+    // (a) real page loads, which compose-webview reports through lastLoadedUrl
     val lastLoadedUrl = state.lastLoadedUrl
     LaunchedEffect(lastLoadedUrl) {
         val u = lastLoadedUrl ?: return@LaunchedEffect
-        if (messagesDesktop && isLeavingMessages(u)) {
-            messagesDesktop = false
-            state.nativeWebView.settings.userAgentString =
-                if (isDesktop) DESKTOP_USER_AGENT else ""
-            navigator.loadUrl(u)
-        }
+        if (messagesDesktop && isLeavingMessages(u)) leaveMessages()
+    }
+    // (b) in-page navigations of the desktop single-page app, reported by messages_tab.js
+    LaunchedEffect(leftMessagesSignal) {
+        if (leftMessagesSignal > 0 && messagesDesktop) leaveMessages()
     }
 
     LaunchedEffect(isDesktop, messagesDesktop) {
@@ -327,6 +343,10 @@ fun MaterialbookWebView(
                 addJavascriptInterface(
                     ClipboardBridge(context),
                     "ClipboardBridge"
+                )
+                addJavascriptInterface(
+                    MessagesBridge { leftMessagesSignal++ },
+                    "MessagesBridge"
                 )
                 addJavascriptInterface(
                     MaterialYouBridge(primaryColor, onPrimaryColor),

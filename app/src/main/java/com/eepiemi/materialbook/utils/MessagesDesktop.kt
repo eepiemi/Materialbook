@@ -40,3 +40,38 @@ fun isLeavingMessages(url: String): Boolean {
     if (!isFacebookHost(host)) return false
     return listOf("/messages", "/messenger", "/login", "/checkpoint").none { path.startsWith(it) }
 }
+
+/** The desktop Messages page (the one loaded with the desktop user agent). */
+fun isDesktopMessagesUrl(url: String): Boolean {
+    val uri = runCatching { java.net.URI(url) }.getOrNull() ?: return false
+    return uri.host?.lowercase() == "www.facebook.com" && (uri.path ?: "").startsWith("/messages")
+}
+
+private val THREAD_PATH = Regex("^/messages/(?:e2ee/)?t/[^/]+")
+
+/**
+ * Desktop equivalent of any Messages/Messenger link, so deep links keep their conversation:
+ * `facebook.com/messages/t/<id>`, `m.me/<name>`, `messenger.com/t/<id>` and
+ * `fb-messenger://user/<id>` open that thread; anything else opens the inbox.
+ */
+fun messagesDesktopUrl(url: String): String {
+    val inbox = MESSAGES_DESKTOP_URL
+    val uri = runCatching { java.net.URI(url) }.getOrNull() ?: return inbox
+    val scheme = uri.scheme?.lowercase()
+    val host = uri.host?.lowercase() ?: ""
+    val path = uri.path ?: ""
+    fun thread(id: String) = if (id.isBlank()) inbox else "https://www.facebook.com/messages/t/$id"
+    return when {
+        scheme == "fb-messenger" && (host == "user" || host == "threads") ->
+            thread(path.trim('/').substringBefore('/'))
+        scheme != "http" && scheme != "https" -> inbox
+        host == "m.me" || host.endsWith(".m.me") -> {
+            val first = path.trim('/').substringBefore('/')
+            // m.me/j/<code> is a group invite: no desktop equivalent
+            if (first == "j") inbox else thread(first)
+        }
+        host == "messenger.com" || host.endsWith(".messenger.com") ->
+            if (path.startsWith("/t/")) thread(path.removePrefix("/t/").substringBefore('/')) else inbox
+        else -> THREAD_PATH.find(path)?.let { "https://www.facebook.com" + it.value } ?: inbox
+    }
+}
