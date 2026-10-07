@@ -8,16 +8,15 @@
   if (window.__mbMessagesTabHooked) return;
   window.__mbMessagesTabHooked = true;
 
-  // Locale independent: the tab's icon glyph, or "third of the six tabs". The English
-  // label is kept as the first check.
+  // Locale independent: the English label, or the tab's icon glyph. No position check:
+  // if Facebook changed both, matching by position could hijack another tab, and a miss
+  // only leaves today's behavior ("Download Messenger" page).
   const MESSAGES_GLYPH = '\u{F0388}';
   const isMessagesTab = (t) => {
     const tab = t && t.closest && t.closest('[role="tab"]');
     if (!tab) return null;
     if (/^messages\b/i.test(tab.getAttribute('aria-label') || '')) return tab;
     if ((tab.textContent || '').indexOf(MESSAGES_GLYPH) !== -1) return tab;
-    const list = tab.parentElement;
-    if (list && list.getAttribute('role') === 'tablist' && list.children.length === 6 && list.children[2] === tab) return tab;
     return null;
   };
 

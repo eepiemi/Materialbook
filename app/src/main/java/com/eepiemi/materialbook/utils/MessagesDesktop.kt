@@ -16,7 +16,7 @@ private fun isFacebookHost(host: String) =
         !host.startsWith("l.") && !host.startsWith("lm.")
 
 /**
- * Every way Facebook Lite tries to open Messages/Messenger: the facebook.com/messages
+ * Every way Facebook's mobile site (m.facebook.com) tries to open Messages/Messenger: the facebook.com/messages
  * page, m.me and messenger.com links, and the fb-messenger:// and intent:// deep links
  * that start the Messenger app (none of which render usefully in the mobile web view).
  */
