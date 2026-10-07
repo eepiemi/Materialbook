@@ -260,19 +260,26 @@ fun MaterialbookWebView(
         navigator.loadUrl(target)
     }
 
-    // Left the Messages section: back to the normal user agent. The page is already on the
-    // destination URL, so reload it (loadUrl would push a duplicate history entry).
+    // Left the Messages section: back to the normal user agent. Reload only when the page in
+    // front of us is still the desktop site (an in-page navigation, or a page that had to be
+    // fetched again). A Back that lands on the cached mobile page keeps its scroll position:
+    // the new user agent only matters for the requests made from now on. loadUrl is not used
+    // because the page is already on the destination URL and it would push a duplicate entry.
     val leaveMessages = {
         messagesDesktop = false
         state.nativeWebView.settings.userAgentString =
             if (isDesktop) DESKTOP_USER_AGENT else ""
-        navigator.reload()
+        navigator.evaluateJavaScript("(!!document.querySelector('html[id=\"facebook\"]')).toString()") { isDesktopPage ->
+            if (isDesktopPage.contains("true")) navigator.reload()
+        }
     }
-    // (a) real page loads, which compose-webview reports through lastLoadedUrl
+    // (a) real page loads, which compose-webview reports through lastLoadedUrl. Wait for the
+    // load to finish so the check above looks at the new document, not the one being left.
     val lastLoadedUrl = state.lastLoadedUrl
-    LaunchedEffect(lastLoadedUrl) {
+    val pageFinished = state.loadingState is LoadingState.Finished
+    LaunchedEffect(lastLoadedUrl, pageFinished) {
         val u = lastLoadedUrl ?: return@LaunchedEffect
-        if (messagesDesktop && isLeavingMessages(u)) leaveMessages()
+        if (pageFinished && messagesDesktop && isLeavingMessages(u)) leaveMessages()
     }
     // (b) in-page navigations of the desktop single-page app, reported by messages_tab.js
     LaunchedEffect(leftMessagesSignal) {
