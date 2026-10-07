@@ -20,9 +20,21 @@
     return null;
   };
 
+  // Facebook's own tab handler also pushes the current URL onto the history (twice) when the
+  // tab is touched, which leaves a duplicate feed entry behind Messages: Back would land on
+  // that entry instead of the real feed and the feed would lose its scroll position. For a
+  // moment after the touch, same-URL pushState/replaceState calls are dropped.
+  let guardUntil = 0;
+  ['touchstart', 'pointerdown', 'mousedown'].forEach((type) =>
+    document.addEventListener(type, (e) => {
+      if (isMessagesTab(e.target)) guardUntil = Date.now() + 2000;
+    }, true)
+  );
+
   let last = 0;
   const go = (e) => {
     if (!isMessagesTab(e.target)) return;
+    guardUntil = Date.now() + 2000;
     e.stopImmediatePropagation();
     // First of pointerup/click wins; touchend/mouseup are only swallowed.
     if ((e.type === 'pointerup' || e.type === 'click') && Date.now() - last > 1000) {
@@ -45,7 +57,8 @@
   };
   ['pushState', 'replaceState'].forEach((k) => {
     const orig = history[k];
-    history[k] = function () {
+    history[k] = function (state, title, url) {
+      if (Date.now() < guardUntil && (url == null || new URL(url, location.href).href === location.href)) return;
       const r = orig.apply(this, arguments);
       setTimeout(notifyLeft, 0);
       return r;

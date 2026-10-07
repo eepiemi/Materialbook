@@ -52,6 +52,7 @@ import com.eepiemi.materialbook.utils.jsBridge.MaterialbookSettings
 import com.eepiemi.materialbook.utils.jsBridge.ThemeChange
 import com.eepiemi.materialbook.utils.jsBridge.MaterialYouBridge
 import com.eepiemi.materialbook.utils.jsBridge.MessagesBridge
+import com.eepiemi.materialbook.utils.isDesktopMessagesUrl
 import com.eepiemi.materialbook.utils.messagesDesktopUrl
 import com.eepiemi.materialbook.utils.rememberAutoDesktop
 import com.eepiemi.materialbook.utils.rememberImeHeight
@@ -122,6 +123,17 @@ fun MaterialbookWebView(
                 when (backHandled) {
                     "false" -> {
                         if (navigator.canGoBack) {
+                            // Going back out of Messages: restore the normal user agent first, so the page behind
+                            // it is fetched as the mobile site instead of being served as desktop and reloaded.
+                            if (messagesDesktop) {
+                                val history = state.nativeWebView.copyBackForwardList()
+                                val previous = history.getItemAtIndex(history.currentIndex - 1)?.url
+                                if (previous == null || !isDesktopMessagesUrl(previous)) {
+                                    messagesDesktop = false
+                                    state.nativeWebView.settings.userAgentString =
+                                        if (settingsVM.desktopLayout.value) DESKTOP_USER_AGENT else ""
+                                }
+                            }
                             navigator.navigateBack()
                         } else {
                             activity?.finish()
@@ -261,10 +273,11 @@ fun MaterialbookWebView(
     }
 
     // Left the Messages section: back to the normal user agent. Reload only when the page in
-    // front of us is still the desktop site (an in-page navigation, or a page that had to be
-    // fetched again). A Back that lands on the cached mobile page keeps its scroll position:
-    // the new user agent only matters for the requests made from now on. loadUrl is not used
-    // because the page is already on the destination URL and it would push a duplicate entry.
+    // front of us is still the desktop site (an in-page navigation of the desktop site, or a
+    // page that had to be fetched again). The Back button restores the user agent before it
+    // navigates (see the BackHandler), so it lands on the mobile site and needs no reload.
+    // loadUrl is not used because the page is already on the destination URL and it would
+    // push a duplicate history entry.
     val leaveMessages = {
         messagesDesktop = false
         state.nativeWebView.settings.userAgentString =
