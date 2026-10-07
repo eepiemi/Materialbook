@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Message
 import androidx.compose.material.icons.filled.BurstMode
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Diversity1
@@ -61,6 +62,7 @@ fun SettingsContent(
     var isOpenDialog by rememberSaveable { mutableStateOf(false) }
 
     val removeAds = viewModel.removeAds.collectAsState()
+    val messagesDesktop = viewModel.messagesDesktop.collectAsState()
     val enableDownloadContent = viewModel.enableDownloadContent.collectAsState()
     val enableCopyToClipboard = viewModel.enableCopyToClipboard.collectAsState()
     val desktopLayout = viewModel.desktopLayout.collectAsState()
@@ -84,6 +86,13 @@ fun SettingsContent(
                     supportingText = stringResource(R.string.hide_sponsored_ads_from_your_feed),
                     isActive = removeAds.value,
                     onClick = { viewModel.setRemoveAds(!removeAds.value) },
+                ),
+                SettingsItem(
+                    icon = Icons.AutoMirrored.Outlined.Message,
+                    title = stringResource(R.string.messages_desktop_title),
+                    supportingText = stringResource(R.string.messages_desktop_desc),
+                    isActive = messagesDesktop.value,
+                    onClick = { viewModel.setMessagesDesktop(!messagesDesktop.value) },
                 ),
                 SettingsItem(
                     icon = Icons.Outlined.FileDownload,
