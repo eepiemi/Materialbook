@@ -1,3 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Materialbook</string>
+    <string name="apply_immediately">Terapkan Sekarang?</string>
+    <string name="remove_ads_title">Hapus iklan</string>
+    <string name="download_content_title">Unduh konten</string>
+    <string name="copy_to_clipboard_title">Salin ke papan klip</string>
+    <string name="desktop_layout_title">Tata letak desktop</string>
+    <string name="immersive_mode_title">Mode imersif</string>
+    <string name="sticky_navbar_title">Navbar Tetap</string>
+    <string name="pinch_to_zoom_title">Cubit untuk memperbesar</string>
+    <string name="material_you_title">Material You</string>
+    <string name="amoled_black_title">AMOLED Hitam</string>
+    <string name="customize_feed_title">Sesuaikan umpan</string>
+    <string name="network_error_title">Hubungkan ke jaringan</string>
+    <string name="network_error_description">Untuk menggunakan Materialbook, hidupkan data seluler atau sambungkan ke Wi-Fi.</string>
+    <string name="ok">OK</string>
+    <string name="saved_to_downloads">Tersimpan di Unduhan</string>
+    <string name="download_failed_invalid_data">Unduhan gagal: Data tidak valid</string>
+    <string name="failed_to_save_file">Gagal menyimpan berkas</string>
+    <string name="image_copied_to_clipboard">Gambar disalin ke papan klip</string>
+    <string name="copy_failed_invalid_data">Penyalinan gagal: Data tidak valid</string>
+    <string name="copy_failed_invalid_image">Penyalinan gagal: Gambar tidak valid</string>
+    <string name="failed_to_copy_image">Gagal menyalin gambar</string>
+    <string name="clipboard_not_supported">Papan klip tidak didukung pada versi ini</string>
+    <string name="suggested_posts">Postingan yang disarankan</string>
+    <string name="reels">Reels</string>
+    <string name="stories">Cerita</string>
+    <string name="people_you_may_know">Orang yang mungkin Anda kenal</string>
+    <string name="groups">Grup</string>
+    <string name="enable_material_you_theming_for_facebook">Hidupkan tema Material You untuk Facebook</string>
+    <string name="enable_pure_black_theme_for_amoled_displays">Hidupkan tema hitam pekat. Membutuhkan \'Mode gelap\' agar berfungsi</string>
+    <string name="keep_the_navigation_bar_visible_while_scrolling">Jaga agar bilah navigasi tetap terlihat saat menggulir</string>
+    <string name="hide_system_bars_for_a_fullscreen_experience">Sembunyikan bilah sistem untuk pengalaman layar penuh</string>
+    <string name="force_desktop_layout_may_not_be_suitable_for_smaller_display">Paksa tata letak desktop. Tidak cocok untuk layar kecil.</string>
+    <string name="use_two_fingers_to_zoom_in_or_out">Gunakan dua jari untuk memperbesar atau memperkecil</string>
+    <string name="customize_feed">Tampilkan atau sembunyikan item</string>
+    <string name="hide_sponsored_ads_from_your_feed">Sembunyikan iklan bersponsor dari umpan</string>
+    <string name="enable_download_button_on_media_view">Hidupkan tombol unduh pada tampilan media</string>
+    <string name="enable_copy_to_clipboard_button_on_media_view">Hidupkan tombol salin ke papan klip pada tampilan media</string>
+    <string name="materialbook_settings">Pengaturan Materialbook</string>
+    <string name="support_my_work">Dukung karya saya! ☕</string>
+    <string name="not_supported">Tidak didukung</string>
 </resources>
