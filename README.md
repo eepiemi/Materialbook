@@ -84,7 +84,7 @@ If enabled, the app:
 4.  **Run the app** in a device or emulator.
 
 <h2 align="middle">
-    💗 Acknowledgement:
+    💗 Acknowledgement
 </h2>
 
 *  [@KevinnZou/compose-webview-multiplatform](https://github.com/KevinnZou/compose-webview-multiplatform)  
