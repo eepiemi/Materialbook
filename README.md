@@ -25,10 +25,6 @@
 </h2>
 
 <p align="middle">
-    Materialbook uses <a href="https://weblate.org/">Weblate</a> for its translations
-</p>
-
-<p align="middle">
     <a href="https://hosted.weblate.org/engage/materialbook/">
         <img alt='Language breakdown' width='75%' src='https://language-breakdown-materialbook.eepiemi.workers.dev'/>
     </a>
@@ -87,12 +83,18 @@ If enabled, the app:
     💗 Acknowledgement
 </h2>
 
-*  [@KevinnZou/compose-webview-multiplatform](https://github.com/KevinnZou/compose-webview-multiplatform)  
+<p align="middle">
+    <a href="https://github.com/KevinnZou/compose-webview-multiplatform">@KevinnZou/compose-webview-multiplatform</a>
+</p>
 
+<p align="middle">
+    <a href="https://weblate.org">Weblate — Translation platform</a>
+</p>
+    
 <h2 align="middle">
     Contributors
 </h2>
 
 <a href="https://github.com/eepiemi/Materialbook/graphs/contributors">
-  <img alt="Contributors" src="https://contrib.rocks/image?repo=eepiemi/Materialbook" width="100%"/>
+    <img alt="Contributors" src="https://contrib.rocks/image?repo=eepiemi/Materialbook" width="100%"/>
 </a>
