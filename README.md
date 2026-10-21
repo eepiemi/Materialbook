@@ -21,6 +21,20 @@
 </p>
 
 <h2 align="middle">
+    🌐 Translations
+</h2>
+
+<p align="middle">
+    Materialbook uses <a href="https://weblate.org/">Weblate</a> for its translations
+</p>
+
+<p align="middle">
+    <a href="https://hosted.weblate.org/engage/materialbook/">
+        <img alt='Language breakdown' width='75%' src='https://language-breakdown-materialbook.eepiemi.workers.dev'/>
+    </a>
+</p>
+
+<h2 align="middle">
     ✏️ This fork:
 </h2>
 
@@ -57,9 +71,9 @@ If enabled, the app:
 
 1.  **Clone the repository**
     * In Android Studio:
-      * File > New > Project from Version Control
-      * Paste `https://github.com/eepiemi/Materialbook.git` and clone.
-    * Or via terminal: 
+        * File > New > Project from Version Control
+        * Paste `https://github.com/eepiemi/Materialbook.git` and clone.
+    * Or via terminal:
     ```
     git clone https://github.com/eepiemi/Materialbook.git
     cd Materialbook
