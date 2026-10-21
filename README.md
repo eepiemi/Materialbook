@@ -88,3 +88,11 @@ If enabled, the app:
 </h2>
 
 *  [@KevinnZou/compose-webview-multiplatform](https://github.com/KevinnZou/compose-webview-multiplatform)  
+
+<h2 align="middle">
+    Contributors
+</h2>
+
+<a href="https://github.com/eepiemi/Materialbook/graphs/contributors">
+  <img alt="Contributors" src="https://contrib.rocks/image?repo=eepiemi/Materialbook" width="100%"/>
+</a>
