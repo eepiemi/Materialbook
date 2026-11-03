@@ -1,3 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Materialbook</string>
+    <string name="apply_immediately">Zastosować od razu?</string>
+    <string name="remove_ads_title">Usuń reklamy</string>
+    <string name="download_content_title">Pobierz zawartość</string>
+    <string name="copy_to_clipboard_title">Kopiuj do schowka</string>
+    <string name="desktop_layout_title">Układ komputerowy</string>
+    <string name="immersive_mode_title">Tryb pełnoekranowy</string>
+    <string name="sticky_navbar_title">Przypięty pasek nawigacji</string>
+    <string name="pinch_to_zoom_title">Powiększenie gestem szczypania</string>
+    <string name="material_you_title">Material You</string>
+    <string name="amoled_black_title">Czerń AMOLED</string>
+    <string name="customize_feed_title">Dostosuj kanał</string>
+    <string name="network_error_title">Połącz się z siecią</string>
+    <string name="network_error_description">Aby korzystać z Materialbooka, włącz transmisję danych lub połącz się z siecią Wi-Fi.</string>
+    <string name="ok">OK</string>
+    <string name="saved_to_downloads">Zapisano w folderze Pobrane</string>
+    <string name="download_failed_invalid_data">Nie udało się pobrać: nieprawidłowe dane</string>
+    <string name="failed_to_save_file">Nie udało się zapisać do pliku</string>
+    <string name="image_copied_to_clipboard">Obraz skopiowany do schowka</string>
+    <string name="copy_failed_invalid_data">Błąd podczas kopiowania: Niepoprawne dane</string>
+    <string name="copy_failed_invalid_image">Błąd podczas kopiowania: Niepoprawny obraz</string>
+    <string name="failed_to_copy_image">Błąd podczas kopiowania obrazu</string>
+    <string name="clipboard_not_supported">Schowek nie jest wspierany w tej wersji</string>
+    <string name="suggested_posts">Sugerowane posty</string>
+    <string name="reels">Rolki</string>
+    <string name="stories">Relacje</string>
+    <string name="people_you_may_know">Osoby, które możesz znać</string>
+    <string name="groups">Grupy</string>
+    <string name="enable_material_you_theming_for_facebook">Włącz motyw Material You w Facebooku</string>
+    <string name="enable_pure_black_theme_for_amoled_displays">Włącz motyw głębokiej czerni. Wymaga \'Tryb ciemny\'</string>
+    <string name="keep_the_navigation_bar_visible_while_scrolling">Pozostaw pasek nawigacji widoczny podczas przewijania</string>
+    <string name="hide_system_bars_for_a_fullscreen_experience">Ukryj paski systemowe, aby uzyskać pełnoekranowy widok</string>
+    <string name="force_desktop_layout_may_not_be_suitable_for_smaller_display">Wymuś tryb komputerowy. Niestosowny dla małych ekranów.</string>
+    <string name="use_two_fingers_to_zoom_in_or_out">Użyj dwóch palców, aby przybliżyć lub oddalić</string>
+    <string name="customize_feed">Pokaż lub ukryj elementy</string>
+    <string name="hide_sponsored_ads_from_your_feed">Ukryj sponsorowane reklamy z kanału</string>
+    <string name="enable_download_button_on_media_view">Włącz przycisk pobierania w podglądzie multimediów</string>
+    <string name="enable_copy_to_clipboard_button_on_media_view">Włącz przycisk kopiowania do schowka w podglądzie multimediów</string>
+    <string name="materialbook_settings">Ustawienia Materialbooka</string>
+    <string name="support_my_work">Wesprzyj mnie! ☕</string>
+    <string name="not_supported">Nieobsługiwane</string>
 </resources>
